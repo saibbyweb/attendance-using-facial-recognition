@@ -1,10 +1,10 @@
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
-import Professor from './pages/Professor'
-import Homepage from './pages/Homepage'
-import ResponsiveAppBar from './components/AppBar'
-import Student from './pages/Student'
-import Admin from './pages/Admin'
+import Faculty from '@/pages/Faculty'
+import Homepage from '@/pages/Homepage'
+import ResponsiveAppBar from '@/components/AppBar'
+import Student from '@/pages/Student'
+import Admin from '@/pages/Admin'
 
 function App() {
 
@@ -13,7 +13,7 @@ function App() {
       <ResponsiveAppBar />
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="professor" element={<Professor />} />
+        <Route path="faculty" element={<Faculty />} />
         <Route path="student" element={<Student />} />
         <Route path="admin" element={<Admin />} />
       </Routes>

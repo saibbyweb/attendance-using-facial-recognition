@@ -14,8 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from 'react-router-dom';
 
-const pages = ['Professors \'s Panel', 'Student\'s Panel', 'Admin Panel'];
-const urls = ['professor', 'student', 'admin']
+const pages = ['Faculty Panel', 'Student Panel', 'Admin Panel'];
+const urls = ['faculty', 'student', 'admin']
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {
