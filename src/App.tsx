@@ -9,17 +9,17 @@ import ResponsiveAppBar from '@/components/AppBar'
 import Student from '@/pages/Student'
 import Admin from '@/pages/Admin'
 
-const theme = createTheme({
+export const theme = createTheme({
   palette: {
     primary: {
       light: '#757ce8',
-      main: '#a38080',
-      dark: '#002884',
+      main: '#4e6b8d',
+      dark: '#1e1e1e',
       contrastText: '#fff',
     },
     secondary: {
       light: '#ff7961',
-      main: '#f44336',
+      main: '#ddb7b5',
       dark: '#ba000d',
       contrastText: '#e5e0e0',
     },
