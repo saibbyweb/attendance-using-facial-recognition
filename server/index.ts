@@ -32,6 +32,7 @@ app.use(
     verbose: true,
   })
 );
+
 server.applyStaticMiddleware("/frontend");
 
 /* connect to mongodb */
@@ -44,12 +45,6 @@ app.get("/api", (req, res) =>
 const running = `ExpressJS running on http://localhost:${port} - Environment: ${environment}`;
 
 function start() {
-//   if (process.env.NODE_ENV === "development") {
-//       console.log('running secure')
-//     httpsApp.listen(port, () => console.log(running));
-//     return;
-//   }
-
   app.listen(port, () => console.log(running));
 }
 

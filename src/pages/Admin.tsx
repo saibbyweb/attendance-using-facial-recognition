@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from "react"
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -13,11 +14,19 @@ function TabPanel({ value, index, children }: any) {
 
 export default function Admin() {
 
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = useState(0);
+
+    useEffect(() => {
+        
+        fetch("http://localhost:3000").then(_ => console.log(_.text().then(_ => console.log(_))))
+
+    }, []);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
+
+
 
     return (<>
         <div className="sidebar-menu">
@@ -33,43 +42,43 @@ export default function Admin() {
         <div className="content">
             <TabPanel value={value} index={0}>
                 {/* <ThemeProvider theme={theme}> */}
-                    <Table
-                        title="Classes"
-                        onRowDelete={console.log}
-                        onRowAdd={console.log}
-                        onRowUpdate={console.log}
-                        columns={[
-                            { title: "ID", field: "id" },
-                            { title: "Subject", field: "subject" },
-                            { title: "Course", field: "course" },
-                            {
-                                title: "Batch",
-                                field: "batch"
-                            },
-                            {
-                                title: "Semester",
-                                field: "semester"
-                            },
-                            {
-                                title: "Do magic",
-                                field: "custom",
-                                render: (rowData) => (
-                                    <button onClick={() => console.log(rowData.subject)}>
-                                        Upload
-                                    </button>
-                                )
-                            }
-                        ]}
-                        data={[
-                            {
-                                id: "PGDWD",
-                                subject: "Web Development",
-                                course: "PG Dimploma in Web Design",
-                                batch: 2020,
-                                semester: 2
-                            }
-                        ]}
-                    />
+                <Table
+                    title="Classes"
+                    onRowDelete={console.log}
+                    onRowAdd={console.log}
+                    onRowUpdate={console.log}
+                    columns={[
+                        { title: "ID", field: "id" },
+                        { title: "Subject", field: "subject" },
+                        { title: "Course", field: "course" },
+                        {
+                            title: "Batch",
+                            field: "batch"
+                        },
+                        {
+                            title: "Semester",
+                            field: "semester"
+                        },
+                        {
+                            title: "Do magic",
+                            field: "custom",
+                            render: (rowData) => (
+                                <button onClick={() => console.log(rowData.subject)}>
+                                    Upload
+                                </button>
+                            )
+                        }
+                    ]}
+                    data={[
+                        {
+                            id: "PGDWD",
+                            subject: "Web Development",
+                            course: "PG Dimploma in Web Design",
+                            batch: 2020,
+                            semester: 2
+                        }
+                    ]}
+                />
                 {/* </ThemeProvider> */}
             </TabPanel>
             <TabPanel value={value} index={1}>
