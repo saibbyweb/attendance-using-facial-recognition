@@ -25,11 +25,11 @@ export default function Admin() {
                 <Tab icon={<PersonPinIcon />} label="NEARBY" />
             </Tabs>
 
- 
+
         </div>
         {/* content */}
         <div className="content">
-        <TabPanel value={value} index={0}>
+            <TabPanel value={value} index={0}>
                 Item One
             </TabPanel>
             <TabPanel value={value} index={1}>
