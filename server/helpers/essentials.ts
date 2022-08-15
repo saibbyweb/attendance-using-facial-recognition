@@ -57,7 +57,7 @@ export type MongoId = mongoose.Types.ObjectId | string;
 /* mongo db connector */
 export const dbConnect = async (): Promise<any> => {
     /* attempting to connect */
-    const connectionAttempt = mongoose.connect(mongoConnectionString);
+    const connectionAttempt = mongoose.connect(mongoConnectionString!);
     /* wait for the response */
     const { response: connection, error } = await task(connectionAttempt);
 
@@ -73,7 +73,7 @@ export const db = mongoose.connection;
 /* try catch promise */
 export const task = async (promise: Promise<any>): Promise<any> => {
     let response;
-    let error = false;
+    let error: unknown | boolean = false;
     try {
         response = await promise;
     } catch (e) {
@@ -84,8 +84,8 @@ export const task = async (promise: Promise<any>): Promise<any> => {
 };
 
 /* format date */
-export const formatDate = function(date) {
-  date = new Date(date);
+export const formatDate = function(dateString: string) {
+  const date = new Date(dateString);
   const months = [
     "January",
     "February",
