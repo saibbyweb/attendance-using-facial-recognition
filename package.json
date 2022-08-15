@@ -16,7 +16,11 @@
     "@mui/lab": "^5.0.0-alpha.94",
     "@mui/material": "^5.10.0",
     "@mui/styles": "^5.9.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
     "material-table": "^2.0.3",
+    "mongoose": "^6.5.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "6"

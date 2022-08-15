@@ -35,8 +35,8 @@ export default function Admin() {
                 {/* <ThemeProvider theme={theme}> */}
                     <Table
                         title="Classes"
-                        onRowDelete={() => { }}
-                        onRowAdd={() => { }}
+                        onRowDelete={console.log}
+                        onRowAdd={console.log}
                         onRowUpdate={console.log}
                         columns={[
                             { title: "ID", field: "id" },
