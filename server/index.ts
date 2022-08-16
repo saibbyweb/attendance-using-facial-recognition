@@ -19,19 +19,19 @@ if (process.env.NODE_ENV === "development") {
   });
 }
 
-app.use("/", (req, res) => {
-  res.send('WORKING BRO');
-});
+// app.use("/", (req, res) => {
+//   res.send('WORKING BRO');
+// });
 
 /* serve static spa build */
 server.applyStaticMiddleware("/frontend");
 
-app.use(
-  history({
-    disableDotRule: true,
-    verbose: true,
-  })
-);
+// app.use(
+//   history({
+//     disableDotRule: true,
+//     verbose: true,
+//   })
+// );
 
 server.applyStaticMiddleware("/frontend");
 
