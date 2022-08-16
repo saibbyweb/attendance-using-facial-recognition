@@ -1,13 +1,13 @@
 import { mongoose } from "@server/helpers/essentials";
 import { CommonSchema, DocInstance, BaseDoc, DocType, ResultDocument, MongoModel } from "@server/types/global";
 
-/* session type */
+/* Class type */
 export interface Class<T extends DocType = DocType.MONGO> extends CommonSchema {
-
+    subject: string,
+    course: string,
+    batch: string,
+    semester: string,
 }
-
-/* timestamp (mongoose schema) */
-const TimeStamp = { type: Date, default: new Date() };
 
 /* class model */
 export type ClassModel = MongoModel<Class, Class<DocType.BASE>>;
@@ -15,9 +15,19 @@ export type ClassModel = MongoModel<Class, Class<DocType.BASE>>;
 /* class schema */
 const schema = new mongoose.Schema<Class, ClassModel>(
   {
-    
+    /* subject */
+    subject: { type: String, required: true },
+    /* course */
+    course: { type: String, required: true },
+    /* batch */
+    batch: { type: String, required: true },
+    /* semester */
+    semester: { type: String, required: true },
   },
   {
     timestamps: true,
   }
 );
+
+/* exporting driver model */
+export const classes = mongoose.model<Class, ClassModel>("class", schema);
