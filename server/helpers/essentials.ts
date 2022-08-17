@@ -29,7 +29,8 @@ export const server = {
         console.log(`Serving frontend build from: ${directory}`);
 
         app.use(express.static(directory));
-    }, enableCorsIfNeeded: () => {
+    }, 
+    enableCorsIfNeeded: () => {
         /* allow cors if development env */
         if (environment === 'development' || environment === 'production') {
             console.log('CORS APPLIED')
