@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import PhoneIcon from '@mui/icons-material/Phone';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import Table from "@/components/Table";
+import { saveToDatabase } from "@/helpers/api"
 
 
 function TabPanel({ value, index, children }: any) {
@@ -16,17 +17,9 @@ export default function Admin() {
 
     const [value, setValue] = useState(0);
 
-    useEffect(() => {
-        
-        fetch("http://localhost:3000").then(_ => console.log(_.text().then(_ => console.log(_))))
-
-    }, []);
-
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
-
-
 
     return (<>
         <div className="sidebar-menu">
@@ -45,7 +38,7 @@ export default function Admin() {
                 <Table
                     title="Classes"
                     onRowDelete={console.log}
-                    onRowAdd={console.log}
+                    onRowAdd={(payload) => saveToDatabase('class', payload)}
                     onRowUpdate={console.log}
                     columns={[
                         { title: "ID", field: "id" },

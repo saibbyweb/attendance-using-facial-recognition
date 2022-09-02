@@ -16,11 +16,12 @@ type CRUDRequestBody = {
 /* crud response */
 type CRUDResponse = {
   docs?: Array<ModelDoc>,
-  newDocument?: unknown
+  newDoc?: ModelDoc
 };
 
 /* crud api */
 router.post("/crud", async (req: PostReq<CRUDRequestBody>, res: Res<CRUDResponse>) => {
+  console.log('hi 👋', req.body);
   let response: CRUDResponse = {};
   /* extract operation, modelName & payload */
   const { operation, modelName, payload } = req.body;
@@ -31,7 +32,7 @@ router.post("/crud", async (req: PostReq<CRUDRequestBody>, res: Res<CRUDResponse
       break;
     case "add":
       const model = db.model(modelName);
-      await new model(payload).save();
+      response.newDoc = await new model(payload).save();
       break;
     case "update":
       break;
@@ -41,4 +42,4 @@ router.post("/crud", async (req: PostReq<CRUDRequestBody>, res: Res<CRUDResponse
 
   res.send({ msg: "Done", data: response });
 });
-export default { router };
+export default router;

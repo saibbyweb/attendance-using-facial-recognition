@@ -1,6 +1,8 @@
 import { server, port, environment, dbConnect, mongoose } from "@server/helpers/essentials";
+import adminRouter from "@server/router/adminRoutes";
+
 mongoose.set("debug", (collectionName, method, query, doc) => {
-  if(collectionName === 'collections' && method !== 'aggregate' && method !== 'findOne' && method !== 'find')
+  if (collectionName === "collections" && method !== "aggregate" && method !== "findOne" && method !== "find")
     console.log(`${collectionName}.${method}`, JSON.stringify(query), doc);
 });
 
@@ -12,6 +14,7 @@ server.enableCorsIfNeeded();
 
 let httpsApp = null;
 
+/* request middleware */
 if (process.env.NODE_ENV === "development") {
   app.use((req, res, next) => {
     console.log("🔘 " + req.method + ": " + req.url);
@@ -38,15 +41,14 @@ server.applyStaticMiddleware("/frontend");
 /* connect to mongodb */
 dbConnect();
 
-app.get("/api", (req, res) =>
-  res.send("Hi from typescript and esrun. why is it so fast")
-);
+/* apply admin routes */
+app.use("/", adminRouter);
+app.get("/api", (req, res) => res.send("Hi from typescript and esrun. why is it so fast"));
 
 const running = `ExpressJS running on http://localhost:${port} - Environment: ${environment}`;
 
 function start() {
   app.listen(port, () => console.log(running));
 }
-
 
 start();
