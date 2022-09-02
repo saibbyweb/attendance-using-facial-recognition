@@ -30,4 +30,6 @@ const schema = new mongoose.Schema<Class, ClassModel>(
 );
 
 /* exporting driver model */
-export const classes = mongoose.model<Class, ClassModel>("class", schema);
+export const model = mongoose.model<Class, ClassModel>("class", schema);
+export const register = () => console.log('class registered 🎉')
+export default { model, register }

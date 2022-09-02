@@ -1,6 +1,6 @@
 import { server, db } from "@server/helpers/essentials";
 import { PostReq, Res } from "@server/types/global";
-import { classes, Class } from "@server/models/class";
+import { Class } from "@server/models/class";
 /* creating express router */
 const router = server.express.Router();
 

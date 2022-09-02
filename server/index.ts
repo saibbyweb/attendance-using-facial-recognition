@@ -1,5 +1,6 @@
 import { server, port, environment, dbConnect, mongoose } from "@server/helpers/essentials";
 import adminRouter from "@server/router/adminRoutes";
+import "@server/models";
 
 mongoose.set("debug", (collectionName, method, query, doc) => {
   if (collectionName === "collections" && method !== "aggregate" && method !== "findOne" && method !== "find")
