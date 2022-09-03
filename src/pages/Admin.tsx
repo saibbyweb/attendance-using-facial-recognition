@@ -20,6 +20,12 @@ const modelsWithFields: ModelsWithFields = {
         // {
         // render: (rowData) => ( <button onClick={() => console.log(rowData.subject)}>Upload </button>)
         // }
+    ],
+    faculty: [
+        { title: "Employee ID", field: "employeeId" },
+        { title: "First Name", field: "firstName" },
+        { title: "Last Name", field: "lastName" },
+        { title: "Classes", field: "classes" }
     ]
 }
 
@@ -76,6 +82,7 @@ export default function Admin() {
         {/* content */}
         <div className="content">
             {Object.keys(modelsWithFields).map((modelName, index) => <TableData
+                title={modelName.toUpperCase()}
                 index={index}
                 activeIndex={value}
                 updateData={updateData}

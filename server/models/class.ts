@@ -1,5 +1,5 @@
 import { mongoose } from "@server/helpers/essentials";
-import { CommonSchema, DocInstance, BaseDoc, DocType, ResultDocument, MongoModel } from "@server/types/global";
+import { CommonSchema, DocType, MongoModel } from "@server/types/global";
 
 /* Class type */
 export interface Class<T extends DocType = DocType.MONGO> extends CommonSchema {
