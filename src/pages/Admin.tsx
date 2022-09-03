@@ -6,26 +6,52 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import Table from "@/components/Table";
-import { fetchRemoteData, saveToDatabase } from "@/helpers/api"
+import { fetchRemoteData, saveDocInDatabase, updateDocInDatabse } from "@/helpers/api"
 
 
 function TabPanel({ value, index, children }: any) {
     return (<div hidden={value !== index}> {children} </div>)
 }
 
+/* model names */
+const modelNames = ['class', 'faculty', 'students']
+
 export default function Admin() {
     /* set active tab */
     const [value, setValue] = useState(0);
     /* active table data */
     const [activeTableData, setActiveTableData] = useState([]);
-
+    /* set active tab index */
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 
+    /* fetch and set remote data */
+    async function setRemoteData() {
+        const { data } = await fetchRemoteData(modelNames[value]);
+        setActiveTableData(data.docs);
+    }
+
+    /* re-fetch data whenever the tab active tab changes */
     useEffect(() => {
-        fetchRemoteData('class').then(data => setActiveTableData(data));
+        setRemoteData();
     }, [value])
+    
+    /* update database */
+    async function updateDatabase(operation: string, payload: string) {
+        switch (operation) {
+            case 'add':
+                saveDocInDatabase(modelNames[value], payload);
+                break;
+            case 'update':
+                updateDocInDatabse(modelNames[value], payload);
+                break;
+            case 'delete':
+                break;
+        }
+        /* refetch data from database */
+        setRemoteData();
+    }
 
     return (<>
         <div className="sidebar-menu">
@@ -44,8 +70,8 @@ export default function Admin() {
                 <Table
                     title="Classes"
                     onRowDelete={console.log}
-                    onRowAdd={(payload) => saveToDatabase('class', payload)}
-                    onRowUpdate={console.log}
+                    onRowAdd={(payload) => updateDatabase('add', payload)}
+                    onRowUpdate={(payload) => updateDatabase('update', payload)}
                     columns={[
                         { title: "Course Code", field: "courseCode" },
                         { title: "Subject", field: "subject" },
@@ -68,16 +94,7 @@ export default function Admin() {
                             )
                         }
                     ]}
-                    data={[
-                        {
-                            id: '12',
-                            courseCode: "PGDWD",
-                            subject: "Web Development",
-                            course: "PG Dimploma in Web Design",
-                            batch: 2020,
-                            semester: 2
-                        }
-                    ]}
+                    data={activeTableData}
                 />
                 {/* </ThemeProvider> */}
             </TabPanel>

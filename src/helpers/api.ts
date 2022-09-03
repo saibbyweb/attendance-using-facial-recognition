@@ -14,11 +14,17 @@ export const defaultAxios = axios.create({
 /* urls */
 const CRUD_API = "/crud";
 
-export function saveToDatabase(modelName: string, payload: unknown) {
+/* save to database */
+export function saveDocInDatabase(modelName: string, payload: unknown) {
   defaultAxios.post(CRUD_API, { operation: "add", modelName, payload });
 }
 
+/* update document */
+export function updateDocInDatabse(modelName: string, payload: unknown) {
+  defaultAxios.post(CRUD_API, { operation: "update", modelName, payload });
+}
+
 export async function fetchRemoteData(modelName: string) {
-    const response = await defaultAxios.post(CRUD_API, { operation: "read", modelName })
-    return response.data;
+  const response = await defaultAxios.post(CRUD_API, { operation: "read", modelName });
+  return response.data;
 }
