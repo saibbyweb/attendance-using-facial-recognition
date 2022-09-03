@@ -26,6 +26,13 @@ const modelsWithFields: ModelsWithFields = {
         { title: "First Name", field: "firstName" },
         { title: "Last Name", field: "lastName" },
         { title: "Classes", field: "classes" }
+    ],
+    student: [
+        { title: "Enrollment No", field: "enrollmentNo" },
+        { title: "First Name", field: "firstName" },
+        { title: "Last Name", field: "lastName" },
+        { title: "Course Code", field: "courseCode" },
+        { title: "Batch", field: "batch" }
     ]
 }
 
