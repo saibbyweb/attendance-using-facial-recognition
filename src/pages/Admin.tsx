@@ -6,7 +6,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import Table from "@/components/Table";
-import { saveToDatabase } from "@/helpers/api"
+import { fetchRemoteData, saveToDatabase } from "@/helpers/api"
 
 
 function TabPanel({ value, index, children }: any) {
@@ -14,12 +14,18 @@ function TabPanel({ value, index, children }: any) {
 }
 
 export default function Admin() {
-
+    /* set active tab */
     const [value, setValue] = useState(0);
+    /* active table data */
+    const [activeTableData, setActiveTableData] = useState([]);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
+
+    useEffect(() => {
+        fetchRemoteData('class').then(data => setActiveTableData(data));
+    }, [value])
 
     return (<>
         <div className="sidebar-menu">
@@ -41,7 +47,7 @@ export default function Admin() {
                     onRowAdd={(payload) => saveToDatabase('class', payload)}
                     onRowUpdate={console.log}
                     columns={[
-                        { title: "ID", field: "id" },
+                        { title: "Course Code", field: "courseCode" },
                         { title: "Subject", field: "subject" },
                         { title: "Course", field: "course" },
                         {
@@ -64,7 +70,8 @@ export default function Admin() {
                     ]}
                     data={[
                         {
-                            id: "PGDWD",
+                            id: '12',
+                            courseCode: "PGDWD",
                             subject: "Web Development",
                             course: "PG Dimploma in Web Design",
                             batch: 2020,

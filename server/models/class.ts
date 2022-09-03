@@ -3,10 +3,11 @@ import { CommonSchema, DocInstance, BaseDoc, DocType, ResultDocument, MongoModel
 
 /* Class type */
 export interface Class<T extends DocType = DocType.MONGO> extends CommonSchema {
-    subject: string,
-    course: string,
-    batch: string,
-    semester: string,
+  courseCode: string;
+  subject: string;
+  course: string;
+  batch: string;
+  semester: string;
 }
 
 /* class model */
@@ -15,6 +16,8 @@ export type ClassModel = MongoModel<Class, Class<DocType.BASE>>;
 /* class schema */
 const schema = new mongoose.Schema<Class, ClassModel>(
   {
+    /* course code */
+    courseCode: { type: String, required: true },
     /* subject */
     subject: { type: String, required: true },
     /* course */
@@ -31,5 +34,5 @@ const schema = new mongoose.Schema<Class, ClassModel>(
 
 /* exporting driver model */
 export const model = mongoose.model<Class, ClassModel>("class", schema);
-export const register = () => console.log('class registered 🎉')
-export default { model, register }
+export const register = () => console.log("class registered 🎉");
+export default { model, register };
