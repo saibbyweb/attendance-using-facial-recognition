@@ -16,7 +16,7 @@ const theme = createTheme({
 
 
 
-type TableProps<T> = {
+export type TableProps<T> = {
     data: Array<T>;
     columns: {
         title: string;

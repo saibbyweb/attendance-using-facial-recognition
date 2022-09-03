@@ -14,19 +14,9 @@ export const defaultAxios = axios.create({
 /* urls */
 const CRUD_API = "/crud";
 
-/* save to database */
-export async function saveDocInDatabase(modelName: string, payload: unknown) {
-    return await defaultAxios.post(CRUD_API, { operation: "add", modelName, payload });
-}
-
-/* update document */
-export async function updateDocInDatabse(modelName: string, payload: unknown) {
-    return await defaultAxios.post(CRUD_API, { operation: "update", modelName, payload });
-}
-
-/* delete document */
-export async function deleteDocInDatabase(modelName: string, payload: unknown) {
-    return await defaultAxios.post(CRUD_API, { operation: "delete", modelName, payload });
+/* crud call */
+export async function modifyDatabase(operation:string, modelName: string, payload: unknown) {
+    return await defaultAxios.post(CRUD_API, { operation, modelName, payload });
 }
   
 export async function fetchRemoteData(modelName: string) {

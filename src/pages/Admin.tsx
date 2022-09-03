@@ -5,16 +5,24 @@ import Tab from '@mui/material/Tab';
 import PhoneIcon from '@mui/icons-material/Phone';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
-import Table from "@/components/Table";
-import { fetchRemoteData, saveDocInDatabase, updateDocInDatabse, deleteDocInDatabase } from "@/helpers/api"
+import { fetchRemoteData, modifyDatabase } from "@/helpers/api"
+import TableData from '@/components/TableData';
+import { TableProps } from "@/components/Table";
 
-/* model names */
-const modelNames = ['class', 'faculty', 'students']
-
-/* tab panel (content) */
-function TabPanel({ value, index, children }: any) {
-    return (<div hidden={value !== index}> {children} </div>)
+type ModelsWithFields = Record<string, TableProps<{}>['columns']>;
+const modelsWithFields: ModelsWithFields = {
+    class: [
+        { title: "Course Code", field: "courseCode" },
+        { title: "Subject", field: "subject" },
+        { title: "Course", field: "course" },
+        { title: "Batch", field: "batch" },
+        { title: "Semester", field: "semester" },
+        // {
+        // render: (rowData) => ( <button onClick={() => console.log(rowData.subject)}>Upload </button>)
+        // }
+    ]
 }
+
 
 export default function Admin() {
     /* set active tab */
@@ -22,13 +30,13 @@ export default function Admin() {
     /* active table data */
     const [activeTableData, setActiveTableData] = useState([]);
     /* set active tab index */
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 
     /* fetch and set remote data */
     async function setRemoteData() {
-        const { data } = await fetchRemoteData(modelNames[value]);
+        const { data } = await fetchRemoteData(Object.keys(modelsWithFields)[value]);
         setActiveTableData(data.docs);
     }
 
@@ -36,75 +44,43 @@ export default function Admin() {
     useEffect(() => {
         setRemoteData();
     }, [value])
-    
+
     /* update database */
-    async function updateDatabase(operation: string, payload: Object) {
-        switch (operation) {
-            case 'add':
-                await saveDocInDatabase(modelNames[value], payload);
-                break;
-            case 'update':
-                await updateDocInDatabse(modelNames[value], payload);
-                break;
-            case 'delete':
-                await deleteDocInDatabase(modelNames[value], payload)
-                break;
+    function updateData(operation: string) {
+        return async function (payload: unknown) {
+            /* modify remote database */
+            await modifyDatabase(operation, Object.keys(modelsWithFields)[value], payload);
+            /* refetch data from database */
+            setRemoteData();
         }
-        /* refetch data from database */
-        setRemoteData();
     }
 
     return (<>
         <div className="sidebar-menu">
-            <Tabs textColor="inherit" indicatorColor="primary" variant="fullWidth" orientation="vertical" value={value} onChange={handleChange} aria-label="icon label tabs example">
+            <Tabs textColor="inherit"
+                indicatorColor="primary"
+                variant="fullWidth"
+                orientation="vertical"
+                value={value}
+                onChange={handleTabChange}
+                aria-label="icon label tabs example">
+
                 <Tab icon={<PhoneIcon />} label="Classes" />
                 <Tab icon={<FavoriteIcon />} label="Faculty" />
                 <Tab icon={<PersonPinIcon />} label="Students" />
+
             </Tabs>
 
 
         </div>
         {/* content */}
         <div className="content">
-            <TabPanel value={value} index={0}>
-                {/* <ThemeProvider theme={theme}> */}
-                <Table
-                    title="Classes"
-                    onRowDelete={(payload) => updateDatabase('delete', payload)}
-                    onRowAdd={(payload) => updateDatabase('add', payload)}
-                    onRowUpdate={(payload) => updateDatabase('update', payload)}
-                    columns={[
-                        { title: "Course Code", field: "courseCode" },
-                        { title: "Subject", field: "subject" },
-                        { title: "Course", field: "course" },
-                        {
-                            title: "Batch",
-                            field: "batch"
-                        },
-                        {
-                            title: "Semester",
-                            field: "semester"
-                        },
-                        // {
-                            // title: "Do magic",
-                            // field: "custom",
-                            // render: (rowData) => (
-                            //     <button onClick={() => console.log(rowData.subject)}>
-                            //         Upload
-                            //     </button>
-                            // )
-                        // }
-                    ]}
-                    data={activeTableData}
-                />
-                {/* </ThemeProvider> */}
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                Item Two
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                Item Three
-            </TabPanel>
+            {Object.keys(modelsWithFields).map((modelName, index) => <TableData
+                index={index}
+                activeIndex={value}
+                updateData={updateData}
+                activeTableData={activeTableData}
+                columns={modelsWithFields[modelName]} />)}
         </div>
     </>)
 }
