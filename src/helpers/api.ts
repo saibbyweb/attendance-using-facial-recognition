@@ -15,15 +15,20 @@ export const defaultAxios = axios.create({
 const CRUD_API = "/crud";
 
 /* save to database */
-export function saveDocInDatabase(modelName: string, payload: unknown) {
-  defaultAxios.post(CRUD_API, { operation: "add", modelName, payload });
+export async function saveDocInDatabase(modelName: string, payload: unknown) {
+    return await defaultAxios.post(CRUD_API, { operation: "add", modelName, payload });
 }
 
 /* update document */
-export function updateDocInDatabse(modelName: string, payload: unknown) {
-  defaultAxios.post(CRUD_API, { operation: "update", modelName, payload });
+export async function updateDocInDatabse(modelName: string, payload: unknown) {
+    return await defaultAxios.post(CRUD_API, { operation: "update", modelName, payload });
 }
 
+/* delete document */
+export async function deleteDocInDatabase(modelName: string, payload: unknown) {
+    return await defaultAxios.post(CRUD_API, { operation: "delete", modelName, payload });
+}
+  
 export async function fetchRemoteData(modelName: string) {
   const response = await defaultAxios.post(CRUD_API, { operation: "read", modelName });
   return response.data;

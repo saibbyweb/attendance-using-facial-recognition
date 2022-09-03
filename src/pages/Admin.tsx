@@ -6,15 +6,15 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import Table from "@/components/Table";
-import { fetchRemoteData, saveDocInDatabase, updateDocInDatabse } from "@/helpers/api"
-
-
-function TabPanel({ value, index, children }: any) {
-    return (<div hidden={value !== index}> {children} </div>)
-}
+import { fetchRemoteData, saveDocInDatabase, updateDocInDatabse, deleteDocInDatabase } from "@/helpers/api"
 
 /* model names */
 const modelNames = ['class', 'faculty', 'students']
+
+/* tab panel (content) */
+function TabPanel({ value, index, children }: any) {
+    return (<div hidden={value !== index}> {children} </div>)
+}
 
 export default function Admin() {
     /* set active tab */
@@ -38,15 +38,16 @@ export default function Admin() {
     }, [value])
     
     /* update database */
-    async function updateDatabase(operation: string, payload: string) {
+    async function updateDatabase(operation: string, payload: Object) {
         switch (operation) {
             case 'add':
-                saveDocInDatabase(modelNames[value], payload);
+                await saveDocInDatabase(modelNames[value], payload);
                 break;
             case 'update':
-                updateDocInDatabse(modelNames[value], payload);
+                await updateDocInDatabse(modelNames[value], payload);
                 break;
             case 'delete':
+                await deleteDocInDatabase(modelNames[value], payload)
                 break;
         }
         /* refetch data from database */
@@ -69,7 +70,7 @@ export default function Admin() {
                 {/* <ThemeProvider theme={theme}> */}
                 <Table
                     title="Classes"
-                    onRowDelete={console.log}
+                    onRowDelete={(payload) => updateDatabase('delete', payload)}
                     onRowAdd={(payload) => updateDatabase('add', payload)}
                     onRowUpdate={(payload) => updateDatabase('update', payload)}
                     columns={[
@@ -84,15 +85,15 @@ export default function Admin() {
                             title: "Semester",
                             field: "semester"
                         },
-                        {
-                            title: "Do magic",
-                            field: "custom",
-                            render: (rowData) => (
-                                <button onClick={() => console.log(rowData.subject)}>
-                                    Upload
-                                </button>
-                            )
-                        }
+                        // {
+                            // title: "Do magic",
+                            // field: "custom",
+                            // render: (rowData) => (
+                            //     <button onClick={() => console.log(rowData.subject)}>
+                            //         Upload
+                            //     </button>
+                            // )
+                        // }
                     ]}
                     data={activeTableData}
                 />

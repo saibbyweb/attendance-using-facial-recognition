@@ -36,9 +36,10 @@ router.post("/crud", async (req: PostReq<CRUDRequestBody>, res: Res<CRUDResponse
       break;
     case "update":
       const { _id, ...rest } = payload;
-      await db.model(modelName).findByIdAndUpdate(payload._id, rest);
+      await db.model(modelName).findByIdAndUpdate(_id, rest);
       break;
     case "delete":
+        await db.model(modelName).findByIdAndDelete(payload._id)
       break;
   }
 
