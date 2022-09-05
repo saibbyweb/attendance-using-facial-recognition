@@ -7,39 +7,27 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import { fetchRemoteData, modifyDatabase } from "@/helpers/api"
 import TableData from '@/components/TableData';
-import { TableProps } from "@/components/Table";
+import Select from 'react-select'
+import { ModelsWithFields, modelsWithFields } from '@/helpers/modelsWithFields';
 
-type ModelsWithFields = Record<string, TableProps<{}>['columns']>;
-const modelsWithFields: ModelsWithFields = {
-    class: [
-        { title: "Course Code", field: "courseCode" },
-        { title: "Subject", field: "subject" },
-        { title: "Course", field: "course" },
-        { title: "Batch", field: "batch" },
-        { title: "Semester", field: "semester" },
-        // {
-        // render: (rowData) => ( <button onClick={() => console.log(rowData.subject)}>Upload </button>)
-        // }
-    ],
-    faculty: [
-        { title: "Employee ID", field: "employeeId" },
-        { title: "First Name", field: "firstName" },
-        { title: "Last Name", field: "lastName" },
-        { title: "Classes", field: "classes" }
-    ],
-    student: [
-        { title: "Enrollment No", field: "enrollmentNo" },
-        { title: "First Name", field: "firstName" },
-        { title: "Last Name", field: "lastName" },
-        { title: "Course Code", field: "courseCode" },
-        { title: "Batch", field: "batch" }
-    ]
+/* options */
+const options = [
+  { value: 'chocolate', label: 'Chocolate' },
+  { value: 'strawberry', label: 'Strawberry' },
+  { value: 'vanilla', label: 'Vanilla' }
+]
+
+
+/* handle change */
+const handleChange = (something: any) => {
+    console.log(something);
 }
 
-
 export default function Admin() {
-    /* set active tab */
+    /* active tab */
     const [value, setValue] = useState(0);
+    /* list of models and field data */
+    const [modelsAndFieldData, setModelsAndFieldData] = useState<ModelsWithFields>({});
     /* active table data */
     const [activeTableData, setActiveTableData] = useState([]);
     /* set active tab index */
@@ -47,22 +35,35 @@ export default function Admin() {
         setValue(newValue);
     };
 
+
     /* fetch and set remote data */
     async function setRemoteData() {
-        const { data } = await fetchRemoteData(Object.keys(modelsWithFields)[value]);
+        const { data } = await fetchRemoteData(Object.keys(modelsAndFieldData)[value]);
         setActiveTableData(data.docs);
     }
+
+    async function fetchClasses() {
+        // const { data } = await fetchRemoteData('class')
+        // setClasses(data.docs.map((point: any) => ({
+        //     label: point.courseCode,
+        //     value: point.courseCode
+        // })))
+    }
+    
+    useEffect(() => {
+        setModelsAndFieldData(modelsWithFields)
+    },[])
 
     /* re-fetch data whenever the tab active tab changes */
     useEffect(() => {
         setRemoteData();
-    }, [value])
+    }, [value, modelsAndFieldData])
 
     /* update database */
     function updateData(operation: string) {
         return async function (payload: unknown) {
             /* modify remote database */
-            await modifyDatabase(operation, Object.keys(modelsWithFields)[value], payload);
+            await modifyDatabase(operation, Object.keys(modelsAndFieldData)[value], payload);
             /* refetch data from database */
             setRemoteData();
         }
@@ -88,13 +89,14 @@ export default function Admin() {
         </div>
         {/* content */}
         <div className="content">
-            {Object.keys(modelsWithFields).map((modelName, index) => <TableData
+            {Object.keys(modelsAndFieldData).map((modelName, index) => <TableData
+                key={index}
                 title={modelName.toUpperCase()}
                 index={index}
                 activeIndex={value}
                 updateData={updateData}
                 activeTableData={activeTableData}
-                columns={modelsWithFields[modelName]} />)}
+                columns={modelsAndFieldData[modelName]} />)}
         </div>
     </>)
 }
