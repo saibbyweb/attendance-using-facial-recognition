@@ -6,7 +6,7 @@ export interface Student<T extends DocType = DocType.MONGO> extends CommonSchema
   enrollmentNo: string;
   firstName: string;
   lastName: string;
-  courseCode: Array<any>;
+  courseCode: any;
   batch: string;
 }
 

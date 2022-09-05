@@ -43,9 +43,9 @@ export default function Admin() {
         let { data } = await fetchRemoteData(activeModelName);
         switch(activeModelName) {
             case "student":
-                data.docs = data.docs.map(point => {
+                data.docs = data.docs.map((point: any) => {
                     let courseCodes = '';
-                    point.courseCode.forEach(code => courseCodes =  courseCodes+= ' / ' + code.value)
+                    point.courseCode.forEach((code: any) => courseCodes =  courseCodes+= ' / ' + code.value)
                     return {...point, courseCode: courseCodes.replace('/','') } 
                 }) 
                 break;
