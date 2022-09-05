@@ -39,8 +39,11 @@ router.post("/crud", async (req: PostReq<CRUDRequestBody>, res: Res<CRUDResponse
       await db.model(modelName).findByIdAndUpdate(_id, rest);
       break;
     case "delete":
-        await db.model(modelName).findByIdAndDelete(payload._id)
+      await db.model(modelName).findByIdAndDelete(payload._id);
       break;
+    default:
+      res.send({ msg: "invalid operation", data: {} });
+      return;
   }
 
   res.send({ msg: "Done", data: response });

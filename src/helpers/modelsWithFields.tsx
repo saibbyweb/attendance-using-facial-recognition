@@ -1,5 +1,5 @@
 import { TableProps } from "@/components/Table";
-
+import Select from 'react-select'
 /* extra table field props */
 type ExtraFieldProps = {
     lookup?: Record<string | number, string | number>
@@ -7,7 +7,7 @@ type ExtraFieldProps = {
 export type ModelsWithFields = Record<string, TableProps<{}>['columns'] & ExtraFieldProps>;
 
 /* models with fields */
-export const modelsWithFields: ModelsWithFields = {
+export const modelsWithFields = (classes: any[]): ModelsWithFields  => ({
     class: [
         { title: "Course Code", field: "courseCode" },
         { title: "Subject", field: "subject" },
@@ -28,13 +28,12 @@ export const modelsWithFields: ModelsWithFields = {
         { title: "Enrollment No", field: "enrollmentNo" },
         { title: "First Name", field: "firstName" },
         { title: "Last Name", field: "lastName" },
-        // {
-        //     title: "Course Code", field: "courseCode",
-        //     editComponent: (props: any) => (
-        //         <Select options={options} onChange={handleChange} isMulti />
-        //     )
-        //     // lookup: { "PGDWD": 'PGDWD', "PGDCA": 'PGDCA' },
-        // },
+        {
+            title: "Course Code", field: "courseCode",
+            editComponent: (props: any) => (
+                <Select options={classes} onChange={() => {}} isMulti />
+            )
+        },
         { title: "Batch", field: "batch" }
     ]
-} 
+})

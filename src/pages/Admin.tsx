@@ -7,7 +7,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import { fetchRemoteData, modifyDatabase } from "@/helpers/api"
 import TableData from '@/components/TableData';
-import Select from 'react-select'
+
 import { ModelsWithFields, modelsWithFields } from '@/helpers/modelsWithFields';
 
 /* options */
@@ -28,6 +28,7 @@ export default function Admin() {
     const [value, setValue] = useState(0);
     /* list of models and field data */
     const [modelsAndFieldData, setModelsAndFieldData] = useState<ModelsWithFields>({});
+    const [classes, setClasses] = useState([]);
     /* active table data */
     const [activeTableData, setActiveTableData] = useState([]);
     /* set active tab index */
@@ -43,16 +44,21 @@ export default function Admin() {
     }
 
     async function fetchClasses() {
-        // const { data } = await fetchRemoteData('class')
-        // setClasses(data.docs.map((point: any) => ({
-        //     label: point.courseCode,
-        //     value: point.courseCode
-        // })))
+        const { data } = await fetchRemoteData('class')
+        setClasses(data.docs.map((point: any) => ({
+            label: point.courseCode,
+            value: point.courseCode
+        })))
     }
     
     useEffect(() => {
-        setModelsAndFieldData(modelsWithFields)
+        fetchClasses();
+       
     },[])
+
+    useEffect(() => {
+        setModelsAndFieldData(modelsWithFields(classes))
+    },[classes])
 
     /* re-fetch data whenever the tab active tab changes */
     useEffect(() => {
