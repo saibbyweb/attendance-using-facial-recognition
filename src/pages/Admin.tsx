@@ -39,7 +39,17 @@ export default function Admin() {
 
     /* fetch and set remote data */
     async function setRemoteData() {
-        const { data } = await fetchRemoteData(Object.keys(modelsAndFieldData)[value]);
+        const activeModelName = Object.keys(modelsAndFieldData)[value];
+        let { data } = await fetchRemoteData(activeModelName);
+        switch(activeModelName) {
+            case "student":
+                data.docs = data.docs.map(point => {
+                    let courseCodes = '';
+                    point.courseCode.forEach(code => courseCodes =  courseCodes+= ' / ' + code.value)
+                    return {...point, courseCode: courseCodes.replace('/','') } 
+                }) 
+                break;
+        }
         setActiveTableData(data.docs);
     }
 
@@ -68,6 +78,7 @@ export default function Admin() {
     /* update database */
     function updateData(operation: string) {
         return async function (payload: unknown) {
+            console.log(payload, modelsAndFieldData)
             /* modify remote database */
             await modifyDatabase(operation, Object.keys(modelsAndFieldData)[value], payload);
             /* refetch data from database */
