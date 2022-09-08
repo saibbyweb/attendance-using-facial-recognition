@@ -26,6 +26,10 @@ router.post("/crud", async (req: PostReq<CRUDRequestBody>, res: Res<CRUDResponse
   /* extract operation, modelName & payload */
   const { operation, modelName, payload } = req.body;
 
+  if(!["class", "faculty", "student"].includes(modelName)) {
+    return res.send({msg: "Invalid request"})
+  }
+
   switch (operation) {
     case "read":
       response.docs = await db.model(modelName).find().lean();
