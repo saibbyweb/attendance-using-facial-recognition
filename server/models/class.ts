@@ -3,7 +3,8 @@ import { CommonSchema, DocType, MongoModel } from "@server/types/global";
 
 /* Class type */
 export interface Class<T extends DocType = DocType.MONGO> extends CommonSchema {
-  courseCode: string;
+  classId: string,
+  // courseCode: string;
   subject: string;
   course: string;
   batch: string;
@@ -16,8 +17,10 @@ export type ClassModel = MongoModel<Class, Class<DocType.BASE>>;
 /* class schema */
 const schema = new mongoose.Schema<Class, ClassModel>(
   {
+    /* classId */
+    classId: { type: String, required: true },
     /* course code */
-    courseCode: { type: String, required: true },
+    // courseCode: { type: String, required: true },
     /* subject */
     subject: { type: String, required: true },
     /* course */

@@ -6,7 +6,7 @@ export interface Faculty<T extends DocType = DocType.MONGO> extends CommonSchema
   employeeId: string;
   firstName: string;
   lastName: string;
-  classes: string;
+  classes: any;
 }
 
 /* class model */
@@ -22,7 +22,7 @@ const schema = new mongoose.Schema<Faculty, FacultyModel>(
     /* last name */
     lastName: { type: String, required: true },
     /* classes */
-    classes: { type: String, required: true },
+    classes: { type: Array, required: true }
   },
   {
     timestamps: true,

@@ -41,12 +41,13 @@ export default function Admin() {
     async function setRemoteData() {
         const activeModelName = Object.keys(modelsAndFieldData)[value];
         let { data } = await fetchRemoteData(activeModelName);
+        /* process non-string data for table */
         switch(activeModelName) {
-            case "student":
+            case "faculty":
                 data.docs = data.docs.map((point: any) => {
-                    let courseCodes = '';
-                    point.courseCode.forEach((code: any) => courseCodes =  courseCodes+= ' / ' + code.value)
-                    return {...point, courseCode: courseCodes.replace('/','') } 
+                    let classes = '';
+                    point.classes.forEach((point: any) => classes =  classes+= ' / ' + point.value)
+                    return {...point, classes: classes.replace('/','') } 
                 }) 
                 break;
         }
