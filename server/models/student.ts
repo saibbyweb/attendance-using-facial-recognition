@@ -8,6 +8,7 @@ export interface Student<T extends DocType = DocType.MONGO> extends CommonSchema
   lastName: string;
   courseCode: string;
   batch: string;
+  classes: any;
 }
 
 /* Student model */
@@ -26,6 +27,8 @@ const schema = new mongoose.Schema<Student, StudentModel>(
     courseCode: { type: String, required: true },
     /* batch */
     batch: { type: String, required: true },
+    /* classes */
+    classes: { type: Array, required: true }
   },
   {
     timestamps: true,

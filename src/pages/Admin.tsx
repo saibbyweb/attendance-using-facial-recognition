@@ -44,6 +44,7 @@ export default function Admin() {
         /* process non-string data for table */
         switch(activeModelName) {
             case "faculty":
+            case "student":
                 data.docs = data.docs.map((point: any) => {
                     let classes = '';
                     point.classes.forEach((point: any) => classes =  classes+= ' / ' + point.value)
@@ -57,8 +58,8 @@ export default function Admin() {
     async function fetchClasses() {
         const { data } = await fetchRemoteData('class')
         setClasses(data.docs.map((point: any) => ({
-            label: point.courseCode,
-            value: point.courseCode
+            label: point.classId + `- (${point.course})`,
+            value: point.classId
         })))
     }
     

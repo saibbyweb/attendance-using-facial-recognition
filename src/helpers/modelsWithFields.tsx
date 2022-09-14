@@ -9,10 +9,11 @@ export type ModelsWithFields = Record<string, TableProps<{}>["columns"] & ExtraF
 /* models with fields */
 export const modelsWithFields = (classes: any[]): ModelsWithFields => ({
   class: [
-    {title: "ClassID", field: "classId" },
+    { title: "ClassID", field: "classId" },
     // { title: "Course Code", field: "courseCode" },
-    { title: "Subject", field: "subject" },
+
     { title: "Course", field: "course" },
+    { title: "Subject", field: "subject" },
     { title: "Batch", field: "batch" },
     { title: "Semester", field: "semester" },
     // {
@@ -50,5 +51,18 @@ export const modelsWithFields = (classes: any[]): ModelsWithFields => ({
       // )
     },
     { title: "Batch", field: "batch" },
+    {
+      title: "Classes",
+      field: "classes",
+      editComponent: (props: any) => (
+        <Select
+          options={classes}
+          onChange={(e) => {
+            props.onChange(e);
+          }}
+          isMulti
+        />
+      ),
+    },
   ],
 });
