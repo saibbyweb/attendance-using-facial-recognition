@@ -11,6 +11,7 @@ import Tooltip from "@mui/material/Tooltip";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
+import { ProfileOption } from "@/pages/Faculty";
 
 type Option = {
     label: string,
@@ -19,9 +20,11 @@ type Option = {
 
 type ProfileSwitchProps = {
   options: Array<Option>;
+  updateActiveProfile: Function;
+  activeProfile: ProfileOption;
 };
 
-export default function ProfileSwitch({ options }: ProfileSwitchProps) {
+export default function ProfileSwitch({ options, activeProfile, updateActiveProfile }: ProfileSwitchProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -43,7 +46,7 @@ export default function ProfileSwitch({ options }: ProfileSwitchProps) {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}> M </Avatar>
+            <Avatar sx={{ width: 32, height: 32 }}> { activeProfile.label } </Avatar>
           </IconButton>
         </Tooltip>
       </Box>
@@ -84,7 +87,7 @@ export default function ProfileSwitch({ options }: ProfileSwitchProps) {
         anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
       >
         {options.map((option) => (
-          <MenuItem>
+          <MenuItem key={option.value} onClick={() => updateActiveProfile(option)}>
             <Avatar /> { option.label }
           </MenuItem>
         ))}

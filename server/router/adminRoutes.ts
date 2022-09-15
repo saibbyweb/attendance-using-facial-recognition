@@ -11,6 +11,7 @@ type CRUDRequestBody = {
   operation: "read" | "add" | "update" | "delete";
   modelName: "class" | string;
   payload: ModelDoc;
+  filters?: Record<string, string>;
 };
 
 /* crud response */
@@ -24,7 +25,7 @@ router.post("/crud", async (req: PostReq<CRUDRequestBody>, res: Res<CRUDResponse
   console.log("hi 👋", req.body);
   let response: CRUDResponse = {};
   /* extract operation, modelName & payload */
-  const { operation, modelName, payload } = req.body;
+  let { operation, modelName, payload, filters } = req.body;
 
   if(!["class", "faculty", "student"].includes(modelName)) {
     return res.send({msg: "Invalid request"})
@@ -32,7 +33,9 @@ router.post("/crud", async (req: PostReq<CRUDRequestBody>, res: Res<CRUDResponse
 
   switch (operation) {
     case "read":
-      response.docs = await db.model(modelName).find().lean();
+      if(!filters)
+        filters = {};
+      response.docs = await db.model(modelName).find(filters).lean();
       break;
     case "add":
       const model = db.model(modelName);

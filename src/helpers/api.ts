@@ -19,7 +19,7 @@ export async function modifyDatabase(operation:string, modelName: string, payloa
     return await defaultAxios.post(CRUD_API, { operation, modelName, payload });
 }
   
-export async function fetchRemoteData(modelName: string) {
-  const response = await defaultAxios.post(CRUD_API, { operation: "read", modelName });
+export async function fetchRemoteData(modelName: string, filters?: Record<string, string>) {
+  const response = await defaultAxios.post(CRUD_API, { operation: "read", modelName, filters });
   return response.data;
 }

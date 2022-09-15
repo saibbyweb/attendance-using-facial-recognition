@@ -1,7 +1,16 @@
 import ProfileSwitch from "@/components/ProfileSwitch";
+import { fetchRemoteData } from "@/helpers/api";
+import { useEffect, useState } from "react";
+
+/* profile option type */
+export type ProfileOption = {
+  label: string,
+  value: string
+}
 
 export default function Faculty() {
-  // there should be an option to switch profile
+  // fetch faculty list
+  // done: there should be an option to switch profile
   // change in profile should refetch data
   // a list of classes should be fetched on being mounted
   // a click on the class id should fetch the list of students for the class
@@ -22,19 +31,29 @@ export default function Faculty() {
   /* state */
   // name
 
-  const profileOptions = [{
-    label: "Suhaib",
-    value: "suhaib"
-  }, {
-    label: "Zubair",
-    value: "zubair"
-  }]
+  const [profileOptions, setProfileOptions] = useState<ProfileOption[]>([{ label: "one", value: "one"}]);
+  const [activeProfile, setActiveProfile] = useState<ProfileOption>(profileOptions[0]);
+  
+  /* fetch classes data for a single teacher */
+  async function setFacultyMemberDetails() {
+    let { data } = await fetchRemoteData("faculty", { employeeId: activeProfile.value });
+    // setActiveProfile()
+
+  }
+  useEffect(() => {
+     
+  },[])
+  
+  /* update active profile */
+  function updateActiveProfile(option: any) {
+    setActiveProfile(option.label);
+  }
 
   return (
     <>
-        <div style={{ marginTop: '7vh'}}>
-            <ProfileSwitch options={profileOptions} />
-        </div>
+      <div style={{ marginTop: "7vh" }}>
+        <ProfileSwitch options={profileOptions} updateActiveProfile={updateActiveProfile} activeProfile={activeProfile} />
+      </div>
     </>
   );
 }
