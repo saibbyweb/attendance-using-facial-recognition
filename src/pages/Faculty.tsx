@@ -49,13 +49,28 @@ export default function Faculty() {
   /* active profile  */
   const [activeProfile, setActiveProfile] = useState<FacultyMember>(profileOptions[0]);
 
+  let classesData: any = [];
+
+  /* function to fetch all classes data */
+  async function fetchClassesData() {
+    const { data } = await fetchRemoteData("class");
+    classesData = data.docs;
+    fetchFacultyData();
+  }
+
+  /* find class detail by id */
+  function getClassDetails(classId: string) {
+    return classesData.find((classPoint: any) => classPoint.classId === classId);
+  }
+
   /* function to fetch all faculty data as profile options */
   async function fetchFacultyData() {
     const { data } = await fetchRemoteData("faculty");
     const profileOptions = data.docs.map((point: any) => ({
+      ...point,
       label: point.firstName + " " + point.lastName,
       value: point.employeeId,
-      ...point,
+      classes: point.classes.map((classPoint: any) => getClassDetails(classPoint.value)),
     }));
     setProfileList(profileOptions);
     setActiveProfile(profileOptions[0]);
@@ -63,7 +78,7 @@ export default function Faculty() {
 
   /* fetch all faculty data once on being mounted */
   useEffect(() => {
-    fetchFacultyData();
+    fetchClassesData();
   }, []);
 
   /* update active profile */
@@ -77,8 +92,8 @@ export default function Faculty() {
       <Box mt="7vh">
         {/* top part */}
         <Box
-        padding="10px"
-        borderRadius="4px"
+          padding="10px"
+          borderRadius="4px"
           sx={{
             display: "flex",
           }}
@@ -92,25 +107,24 @@ export default function Faculty() {
           <ProfileSwitch options={profileOptions} updateActiveProfile={updateActiveProfile} activeProfile={activeProfile} />
         </Box>
         {/* content part */}
-        <Box sx={{display: 'flex'}} >
+        <Box sx={{ display: "flex" }}>
           {/* classes table */}
           <Box mt="10px">
-          <Table
-                title="Classes Table"
-                columns={[
-                  { title: "ClassID", field: "classId" },
-                  // { title: "Course Code", field: "courseCode" },
-              
-                  { title: "Course", field: "course" },
-                  { title: "Subject", field: "subject" },
-                  { title: "Batch", field: "batch" },
-                  { title: "Semester", field: "semester" }]}
-                  data={[]}
-            
+            <Table
+              title="Classes Table"
+              columns={[
+                { title: "ClassID", field: "classId" },
+                // { title: "Course Code", field: "courseCode" },
+
+                { title: "Course", field: "course" },
+                { title: "Subject", field: "subject" },
+                { title: "Batch", field: "batch" },
+                { title: "Semester", field: "semester" },
+              ]}
+              data={activeProfile.classes!}
             />
           </Box>
           {/* details panel */}
-        
         </Box>
       </Box>
     </>
