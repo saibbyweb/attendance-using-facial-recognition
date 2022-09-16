@@ -46,7 +46,7 @@ export default function ProfileSwitch({ options, activeProfile, updateActiveProf
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}> { activeProfile.label } </Avatar>
+            <Avatar sx={{ width: 32, height: 32 }}> { activeProfile.label[0] } </Avatar>
           </IconButton>
         </Tooltip>
       </Box>

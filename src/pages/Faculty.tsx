@@ -5,11 +5,18 @@ import { useEffect, useState } from "react";
 /* profile option type */
 export type ProfileOption = {
   label: string,
-  value: string
+  value: string,
+}
+
+export type FacultyMember = ProfileOption & {
+  employeeId?: string,
+  firstName?: string,
+  lastName?: string,
+  classes?: Array<any>
 }
 
 export default function Faculty() {
-  // fetch faculty list
+  // done: fetch faculty list
   // done: there should be an option to switch profile
   // change in profile should refetch data
   // a list of classes should be fetched on being mounted
@@ -29,24 +36,32 @@ export default function Faculty() {
   // SIDE_NOTE: student list in the admin panel should have an option to upload an image
 
   /* state */
-  // name
-
-  const [profileOptions, setProfileOptions] = useState<ProfileOption[]>([{ label: "one", value: "one"}]);
+  /*  profile options  */
+  const [profileOptions, setProfileList] = useState<ProfileOption[]>([{
+    label: "Fetching...",
+    value: "fetching..."
+  }]);
+  /* active profile  */
   const [activeProfile, setActiveProfile] = useState<ProfileOption>(profileOptions[0]);
   
-  /* fetch classes data for a single teacher */
-  async function setFacultyMemberDetails() {
-    let { data } = await fetchRemoteData("faculty", { employeeId: activeProfile.value });
-    // setActiveProfile()
-
+  /* function to fetch all faculty data as profile options */
+  async function fetchFacultyData() {
+    const { data } = await fetchRemoteData("faculty");
+    const profileOptions = data.docs.map((point: any) => ({
+      label: point.firstName + " " + point.lastName,
+      value: point.employeeId,
+    }))
+    setProfileList(profileOptions);
   }
+  
+  /* fetch all faculty data once on being mounted */
   useEffect(() => {
-     
+     fetchFacultyData();
   },[])
   
   /* update active profile */
   function updateActiveProfile(option: any) {
-    setActiveProfile(option.label);
+    setActiveProfile(option);
   }
 
   return (

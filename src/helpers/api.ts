@@ -1,6 +1,7 @@
 import axios from "axios";
 /* setting default base URL for axios */
 let serverBaseURL;
+
 try {
   serverBaseURL = import.meta.env.DEV ? "http://" + location.hostname + ":" + import.meta.env.VITE_SERVER_PORT : "";
 } catch (e) {
