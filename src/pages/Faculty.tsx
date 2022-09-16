@@ -19,10 +19,6 @@ export type FacultyMember = ProfileOption & {
 };
 
 export default function Faculty() {
-  // done: fetch faculty list
-  // done: there should be an option to switch profile
-  // done: change in profile should refetch data
-  // done: a list of classes should be fetched on being mounted
   // a click on the class id should fetch the list of students for the class
   // there should be some action buttons, one of taking attendance, one for viewing attendance
   // a date selector component might also be needed
@@ -91,42 +87,65 @@ export default function Faculty() {
       {/* whole page */}
       <Box mt="7vh">
         {/* top part */}
-        <Box
-          padding="10px"
-          borderRadius="4px"
-          sx={{
-            display: "flex",
-          }}
-          justifyContent="space-around"
-          bgcolor="white"
-        >
-          <Typography variant="h4" color={theme.palette.primary.dark} sx={{ width: "50%" }}>
-            {" "}
-            👋 Hi, {activeProfile.label}{" "}
-          </Typography>
-          <ProfileSwitch options={profileOptions} updateActiveProfile={updateActiveProfile} activeProfile={activeProfile} />
-        </Box>
+        <FacultyHeader profileOptions={profileOptions} activeProfile={activeProfile} updateActiveProfile={updateActiveProfile} />
         {/* content part */}
         <Box sx={{ display: "flex" }}>
           {/* classes table */}
-          <Box mt="10px">
-            <Table
-              title="Classes Table"
-              columns={[
-                { title: "ClassID", field: "classId" },
-                // { title: "Course Code", field: "courseCode" },
-
-                { title: "Course", field: "course" },
-                { title: "Subject", field: "subject" },
-                { title: "Batch", field: "batch" },
-                { title: "Semester", field: "semester" },
-              ]}
-              data={activeProfile.classes!}
-            />
-          </Box>
+          <ClassesTable activeProfile={activeProfile}/>
           {/* details panel */}
         </Box>
       </Box>
     </>
+  );
+}
+
+/* faculty header props */
+type FacultyHeaderProps = {
+  profileOptions: ProfileOption[];
+  activeProfile: ProfileOption;
+  updateActiveProfile: Function;
+};
+
+/* faculty header component */
+function FacultyHeader({ profileOptions, activeProfile, updateActiveProfile }: FacultyHeaderProps) {
+  return (
+    <Box
+      padding="10px"
+      borderRadius="4px"
+      sx={{
+        display: "flex",
+      }}
+      justifyContent="space-around"
+      bgcolor="white"
+    >
+      <Typography variant="h4" color={theme.palette.primary.dark} sx={{ width: "50%" }}>
+        👋 Hi, {activeProfile.label}
+      </Typography>
+      <ProfileSwitch options={profileOptions} updateActiveProfile={updateActiveProfile} activeProfile={activeProfile} />
+    </Box>
+  );
+}
+
+/* classes table props */
+type ClassesTableProps = {
+  activeProfile: FacultyMember
+}
+
+/* classes table */
+function ClassesTable({activeProfile}: ClassesTableProps) {
+  return (
+    <Box mt="10px" width="65%">
+      <Table
+        title="Classes Table"
+        columns={[
+          { title: "ClassID", field: "classId" },
+          { title: "Course", field: "course" },
+          { title: "Subject", field: "subject" },
+          { title: "Batch", field: "batch" },
+          { title: "Semester", field: "semester" },
+        ]}
+        data={activeProfile.classes!}
+      />
+    </Box>
   );
 }

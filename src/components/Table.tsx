@@ -74,7 +74,7 @@ export default function Table<T extends { id: string }>({
                 options={{
                     paging: false,
                     tableLayout: 'auto',
-                    minBodyHeight: '65vh'
+                    minBodyHeight: '65vh',
                 }}
             />
         </MuiThemeProvider>
