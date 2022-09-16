@@ -21,6 +21,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [activePageIndex, setActivePageIndex] = React.useState(0);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -34,6 +35,7 @@ const ResponsiveAppBar = () => {
   const handleCloseNavMenu = (index: number) => {
     setAnchorElNav(null);
     navigate('/'+urls[index]);
+    setActivePageIndex(index); 
   };
 
   const handleCloseUserMenu = () => {
@@ -124,8 +126,9 @@ const ResponsiveAppBar = () => {
             {pages.map((page, index) => (
               <Button
                 key={page}
+                variant="contained"
                 onClick={() => handleCloseNavMenu(index)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{  color: 'white', m: '0 10px',bgcolor: index === activePageIndex ? 'black' : '' }}
               >
                 {page}
               </Button>
