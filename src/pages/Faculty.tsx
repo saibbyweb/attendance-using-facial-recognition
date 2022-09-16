@@ -1,7 +1,7 @@
 import ProfileSwitch from "@/components/ProfileSwitch";
 import { fetchRemoteData } from "@/helpers/api";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-
 /* profile option type */
 export type ProfileOption = {
   label: string,
@@ -18,8 +18,8 @@ export type FacultyMember = ProfileOption & {
 export default function Faculty() {
   // done: fetch faculty list
   // done: there should be an option to switch profile
-  // change in profile should refetch data
-  // a list of classes should be fetched on being mounted
+  // done: change in profile should refetch data
+  // done: a list of classes should be fetched on being mounted
   // a click on the class id should fetch the list of students for the class
   // there should be some action buttons, one of taking attendance, one for viewing attendance
   // a date selector component might also be needed
@@ -37,12 +37,12 @@ export default function Faculty() {
 
   /* state */
   /*  profile options  */
-  const [profileOptions, setProfileList] = useState<ProfileOption[]>([{
+  const [profileOptions, setProfileList] = useState<FacultyMember[]>([{
     label: "Fetching...",
     value: "fetching..."
   }]);
   /* active profile  */
-  const [activeProfile, setActiveProfile] = useState<ProfileOption>(profileOptions[0]);
+  const [activeProfile, setActiveProfile] = useState<FacultyMember>(profileOptions[0]);
   
   /* function to fetch all faculty data as profile options */
   async function fetchFacultyData() {
@@ -50,6 +50,7 @@ export default function Faculty() {
     const profileOptions = data.docs.map((point: any) => ({
       label: point.firstName + " " + point.lastName,
       value: point.employeeId,
+      ...point
     }))
     setProfileList(profileOptions);
   }
@@ -66,9 +67,10 @@ export default function Faculty() {
 
   return (
     <>
-      <div style={{ marginTop: "7vh" }}>
+      <Box mt="7vh">
+        <Typography variant="h4"> 👋 Hi, {activeProfile.label} </Typography>
         <ProfileSwitch options={profileOptions} updateActiveProfile={updateActiveProfile} activeProfile={activeProfile} />
-      </div>
+      </Box>
     </>
   );
 }

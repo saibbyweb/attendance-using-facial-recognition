@@ -12,7 +12,6 @@ import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { ProfileOption } from "@/pages/Faculty";
-
 type Option = {
     label: string,
     value: string
@@ -36,7 +35,7 @@ export default function ProfileSwitch({ options, activeProfile, updateActiveProf
 
   return (
     <>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+      <Box sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "right", textAlign: "center" }}>
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
@@ -46,6 +45,7 @@ export default function ProfileSwitch({ options, activeProfile, updateActiveProf
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
+            <Typography color="white" mr="10px"> Switch Profile: </Typography>
             <Avatar sx={{ width: 32, height: 32 }}> { activeProfile.label[0] } </Avatar>
           </IconButton>
         </Tooltip>
@@ -84,7 +84,7 @@ export default function ProfileSwitch({ options, activeProfile, updateActiveProf
           },
         }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         {options.map((option) => (
           <MenuItem key={option.value} onClick={() => updateActiveProfile(option)}>
