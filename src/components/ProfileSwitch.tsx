@@ -12,11 +12,11 @@ import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { ProfileOption } from "@/pages/Faculty";
+import { theme } from "@/App";
 type Option = {
     label: string,
     value: string
 }
-
 type ProfileSwitchProps = {
   options: Array<Option>;
   updateActiveProfile: Function;
@@ -45,7 +45,7 @@ export default function ProfileSwitch({ options, activeProfile, updateActiveProf
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Typography color="white" mr="10px"> Switch Profile: </Typography>
+            <Typography  color={theme.palette.primary.dark} mr="10px"> Switch Profile: </Typography>
             <Avatar sx={{ width: 32, height: 32 }}> { activeProfile.label[0] } </Avatar>
           </IconButton>
         </Tooltip>
