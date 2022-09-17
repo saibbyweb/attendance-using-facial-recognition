@@ -59,6 +59,7 @@ export default function Table<T extends { id: string }>({
                 data={data}
                 columns={columns.map((column => ({
                     ...column,
+                    
                     // cellStyle: {
                     //     color: '#FFF'
                     //   },

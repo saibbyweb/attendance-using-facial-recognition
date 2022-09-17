@@ -1,10 +1,10 @@
 import { theme } from "@/App";
 import ProfileSwitch from "@/components/ProfileSwitch";
 import { fetchRemoteData } from "@/helpers/api";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Table, { TableProps } from "@/components/Table";
-
+import PreviewIcon from "@mui/icons-material/Preview";
 /* profile option type */
 export type ProfileOption = {
   label: string;
@@ -45,6 +45,9 @@ export default function Faculty() {
   /* active profile  */
   const [activeProfile, setActiveProfile] = useState<FacultyMember>(profileOptions[0]);
 
+  /* active class */
+  const [activeClass, setActiveClass] = useState<ClassDetails>();
+
   let classesData: any = [];
 
   /* function to fetch all classes data */
@@ -82,20 +85,48 @@ export default function Faculty() {
     setActiveProfile(option);
   }
 
+  /* update active class */
+  function updateActiveClass(classDetails: ClassDetails) {
+    setActiveClass(classDetails);
+  }
+
   return (
     <>
       {/* whole page */}
       <Box mt="7vh">
-        {/* top part */}
+        {/* faculty header */}
         <FacultyHeader profileOptions={profileOptions} activeProfile={activeProfile} updateActiveProfile={updateActiveProfile} />
         {/* content part */}
         <Box sx={{ display: "flex" }}>
           {/* classes table */}
-          <ClassesTable activeProfile={activeProfile}/>
+          <ClassesTable activeProfile={activeProfile} activeClass={activeClass} updateActiveClass={updateActiveClass} />
           {/* details panel */}
+          {activeClass && <DetailsPanel activeClass={activeClass!} />}
         </Box>
       </Box>
     </>
+  );
+}
+
+/* class details */
+type ClassDetails = {
+  classId: string;
+  course: string;
+  subject: string;
+  batch: string;
+  semester: string;
+};
+
+/* type details panel */
+type DetailsPanelProps = {
+  activeClass: ClassDetails;
+};
+
+function DetailsPanel({ activeClass }: DetailsPanelProps) {
+  return (
+    <Box>
+      <h3> {activeClass.classId} </h3>
+    </Box>
   );
 }
 
@@ -128,11 +159,13 @@ function FacultyHeader({ profileOptions, activeProfile, updateActiveProfile }: F
 
 /* classes table props */
 type ClassesTableProps = {
-  activeProfile: FacultyMember
-}
+  activeProfile: FacultyMember;
+  updateActiveClass: Function;
+  activeClass?: ClassDetails;
+};
 
 /* classes table */
-function ClassesTable({activeProfile}: ClassesTableProps) {
+function ClassesTable({ activeProfile, updateActiveClass, activeClass }: ClassesTableProps) {
   return (
     <Box mt="10px" width="65%">
       <Table
@@ -143,6 +176,18 @@ function ClassesTable({activeProfile}: ClassesTableProps) {
           { title: "Subject", field: "subject" },
           { title: "Batch", field: "batch" },
           { title: "Semester", field: "semester" },
+          {
+            title: "Actions",
+            field: "classId",
+            render: (rowData) => {
+
+              return (
+                <Button variant={rowData.classID === activeClass?.classId ? "contained" : "outlined" } onClick={() => updateActiveClass(rowData)}>
+                  <PreviewIcon />
+                </Button>
+              );
+            },
+          },
         ]}
         data={activeProfile.classes!}
       />
