@@ -7,6 +7,7 @@ import Table, { TableProps } from "@/components/Table";
 import PreviewIcon from "@mui/icons-material/Preview";
 import AddCardIcon from "@mui/icons-material/AddCard";
 import Modal from "@mui/material/Modal";
+import { style } from "@mui/system";
 /* profile option type */
 export type ProfileOption = {
   label: string;
@@ -109,6 +110,16 @@ export default function Faculty() {
     </>
   );
 }
+/* student */
+type Student = {
+  id: string,
+  enrollmentNo: string;
+  firstName: string;
+  lastName: string;
+  courseCode: string;
+  batch: string;
+  classes: any;
+};
 
 /* class details */
 type ClassDetails = {
@@ -129,7 +140,7 @@ const ModalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: '70%',
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
@@ -139,13 +150,13 @@ function DetailsPanel({ activeClass }: DetailsPanelProps) {
   /* attendance modal visibility toggle */
   const [openAttendanceModal, setOpenAttendanceModal] = useState(false);
   /* student list */
-  const [studentList, setStudentList] = useState([])
+  const [studentList, setStudentList] = useState<Student[]>([]);
 
   /* fetch student list and open modal */
   async function openModalAndFetchStudentList(classId: string) {
     setOpenAttendanceModal(true);
-    const remoteStudentList = await fetchStudentListInAClass(classId)
-    setStudentList(remoteStudentList);
+    const remoteStudentList = await fetchStudentListInAClass(classId);
+    setStudentList(remoteStudentList.data);
   }
 
   return (
@@ -163,11 +174,23 @@ function DetailsPanel({ activeClass }: DetailsPanelProps) {
       {/* attendance modal */}
       <Modal open={openAttendanceModal} onClose={() => setOpenAttendanceModal(false)}>
         <Paper sx={ModalStyle}>
-        <Typography> hello my friend </Typography>
+          <Typography variant="h4"> Student List </Typography>
+          <Box width="80%">
+          <Table
+                title="Classes Table"
+                columns={[
+                  { title: "Enrollment No.", field: "enrollmentNo" },
+                  { title: "First Name", field: "firstName" },
+                  { title: "Last Name", field: "lastName" },
+                  { title: "Course Code", field: "courseCode" },
+                  { title: "Batch", field: "batch" },
+                ]}
+                data={studentList}
+                enableSelection
+                onSelectionChange={(selectedStudents: Student[]) => console.log(selectedStudents.map(stu => stu.enrollmentNo))}
+              />
+              </Box>
         </Paper>
-        {/* <Box sx={ModalStyle}>
-         <Typography> hello my friend </Typography>
-        </Box> */}
       </Modal>
     </Box>
   );
