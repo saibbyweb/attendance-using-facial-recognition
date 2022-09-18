@@ -1,13 +1,17 @@
 import { theme } from "@/App";
 import ProfileSwitch from "@/components/ProfileSwitch";
 import { fetchRemoteData, fetchStudentListInAClass } from "@/helpers/api";
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Table, { TableProps } from "@/components/Table";
-import PreviewIcon from "@mui/icons-material/Preview";
 import AddCardIcon from "@mui/icons-material/AddCard";
 import Modal from "@mui/material/Modal";
-import { style } from "@mui/system";
+import dayjs, { Dayjs } from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import ClassesTable from "@/components/Faculty/ClassesTable";
+
 /* profile option type */
 export type ProfileOption = {
   label: string;
@@ -112,7 +116,7 @@ export default function Faculty() {
 }
 /* student */
 type Student = {
-  id: string,
+  id: string;
   enrollmentNo: string;
   firstName: string;
   lastName: string;
@@ -122,7 +126,7 @@ type Student = {
 };
 
 /* class details */
-type ClassDetails = {
+export type ClassDetails = {
   classId: string;
   course: string;
   subject: string;
@@ -140,7 +144,7 @@ const ModalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: '70%',
+  width: "70%",
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
@@ -175,21 +179,28 @@ function DetailsPanel({ activeClass }: DetailsPanelProps) {
       <Modal open={openAttendanceModal} onClose={() => setOpenAttendanceModal(false)}>
         <Paper sx={ModalStyle}>
           <Typography variant="h4"> Student List </Typography>
+          {/* student list */}
           <Box width="80%">
-          <Table
-                title="Classes Table"
-                columns={[
-                  { title: "Enrollment No.", field: "enrollmentNo" },
-                  { title: "First Name", field: "firstName" },
-                  { title: "Last Name", field: "lastName" },
-                  { title: "Course Code", field: "courseCode" },
-                  { title: "Batch", field: "batch" },
-                ]}
-                data={studentList}
-                enableSelection
-                onSelectionChange={(selectedStudents: Student[]) => console.log(selectedStudents.map(stu => stu.enrollmentNo))}
-              />
-              </Box>
+            <Table
+              title="Classes Table"
+              columns={[
+                { title: "Enrollment No.", field: "enrollmentNo" },
+                { title: "First Name", field: "firstName" },
+                { title: "Last Name", field: "lastName" },
+                { title: "Course Code", field: "courseCode" },
+                { title: "Batch", field: "batch" },
+              ]}
+              data={studentList}
+              enableSelection
+              onSelectionChange={(selectedStudents: Student[]) => console.log(selectedStudents.map((stu) => stu.enrollmentNo))}
+            />
+          </Box>
+          {/* attendance actions */}
+          <Box>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker label="Basic example" value="" onChange={(newValue) => {}} renderInput={(params) => <TextField {...params} />} />
+            </LocalizationProvider>
+          </Box>
         </Paper>
       </Modal>
     </Box>
@@ -223,39 +234,3 @@ function FacultyHeader({ profileOptions, activeProfile, updateActiveProfile }: F
   );
 }
 
-/* classes table props */
-type ClassesTableProps = {
-  activeProfile: FacultyMember;
-  updateActiveClass: Function;
-  activeClass?: ClassDetails;
-};
-
-/* classes table */
-function ClassesTable({ activeProfile, updateActiveClass, activeClass }: ClassesTableProps) {
-  return (
-    <Box mt="10px" width="65%">
-      <Table
-        title="Classes Table"
-        columns={[
-          { title: "ClassID", field: "classId" },
-          { title: "Course", field: "course" },
-          { title: "Subject", field: "subject" },
-          { title: "Batch", field: "batch" },
-          { title: "Semester", field: "semester" },
-          {
-            title: "Actions",
-            field: "classId",
-            render: (rowData) => {
-              return (
-                <Button variant={rowData.classId === activeClass?.classId ? "contained" : "text"} onClick={() => updateActiveClass(rowData)}>
-                  <PreviewIcon />
-                </Button>
-              );
-            },
-          },
-        ]}
-        data={activeProfile.classes!}
-      />
-    </Box>
-  );
-}
