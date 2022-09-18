@@ -1,6 +1,6 @@
 import { theme } from "@/App";
 import ProfileSwitch from "@/components/ProfileSwitch";
-import { fetchRemoteData } from "@/helpers/api";
+import { fetchRemoteData, fetchStudentListInAClass } from "@/helpers/api";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Table, { TableProps } from "@/components/Table";
@@ -138,6 +138,15 @@ const ModalStyle = {
 function DetailsPanel({ activeClass }: DetailsPanelProps) {
   /* attendance modal visibility toggle */
   const [openAttendanceModal, setOpenAttendanceModal] = useState(false);
+  /* student list */
+  const [studentList, setStudentList] = useState([])
+
+  /* fetch student list and open modal */
+  async function openModalAndFetchStudentList(classId: string) {
+    setOpenAttendanceModal(true);
+    const remoteStudentList = await fetchStudentListInAClass(classId)
+    setStudentList(remoteStudentList);
+  }
 
   return (
     <Box mt="10px" width="33%" borderRadius={2} sx={{ backgroundColor: "white" }}>
@@ -146,7 +155,7 @@ function DetailsPanel({ activeClass }: DetailsPanelProps) {
       </Typography>
       {/* actions bar */}
       <Box>
-        <Button variant="contained" onClick={() => setOpenAttendanceModal(true)}>
+        <Button variant="contained" onClick={() => openModalAndFetchStudentList(activeClass.classId)}>
           <AddCardIcon sx={{ marginRight: "10px" }} />
           Take Attendance
         </Button>

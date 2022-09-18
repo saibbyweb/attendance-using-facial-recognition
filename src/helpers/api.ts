@@ -14,6 +14,7 @@ export const defaultAxios = axios.create({
 
 /* urls */
 const CRUD_API = "/crud";
+const GET_STUDENT_LIST_API = "/getStudentsInAClass";
 
 /* crud call */
 export async function modifyDatabase(operation:string, modelName: string, payload: unknown) {
@@ -22,5 +23,10 @@ export async function modifyDatabase(operation:string, modelName: string, payloa
   
 export async function fetchRemoteData(modelName: string, filters?: Record<string, string>) {
   const response = await defaultAxios.post(CRUD_API, { operation: "read", modelName, filters });
+  return response.data;
+}
+/* fetch student list in a class */
+export async function fetchStudentListInAClass(classId: string) {
+  const response = await defaultAxios.post(GET_STUDENT_LIST_API, { classId })
   return response.data;
 }
