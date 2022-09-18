@@ -1,10 +1,12 @@
 import { theme } from "@/App";
 import ProfileSwitch from "@/components/ProfileSwitch";
 import { fetchRemoteData } from "@/helpers/api";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Table, { TableProps } from "@/components/Table";
 import PreviewIcon from "@mui/icons-material/Preview";
+import AddCardIcon from "@mui/icons-material/AddCard";
+import Modal from "@mui/material/Modal";
 /* profile option type */
 export type ProfileOption = {
   label: string;
@@ -97,7 +99,7 @@ export default function Faculty() {
         {/* faculty header */}
         <FacultyHeader profileOptions={profileOptions} activeProfile={activeProfile} updateActiveProfile={updateActiveProfile} />
         {/* content part */}
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: "flex" }} gap={1}>
           {/* classes table */}
           <ClassesTable activeProfile={activeProfile} activeClass={activeClass} updateActiveClass={updateActiveClass} />
           {/* details panel */}
@@ -122,10 +124,42 @@ type DetailsPanelProps = {
   activeClass: ClassDetails;
 };
 
+const ModalStyle = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 function DetailsPanel({ activeClass }: DetailsPanelProps) {
+  /* attendance modal visibility toggle */
+  const [openAttendanceModal, setOpenAttendanceModal] = useState(false);
+
   return (
-    <Box>
-      <h3> {activeClass.classId} </h3>
+    <Box mt="10px" width="33%" borderRadius={2} sx={{ backgroundColor: "white" }}>
+      <Typography variant="h5" color={theme.palette.primary.dark}>
+        {activeClass.classId}
+      </Typography>
+      {/* actions bar */}
+      <Box>
+        <Button variant="contained" onClick={() => setOpenAttendanceModal(true)}>
+          <AddCardIcon sx={{ marginRight: "10px" }} />
+          Take Attendance
+        </Button>
+      </Box>
+      {/* attendance modal */}
+      <Modal open={openAttendanceModal} onClose={() => setOpenAttendanceModal(false)}>
+        <Paper sx={ModalStyle}>
+        <Typography> hello my friend </Typography>
+        </Paper>
+        {/* <Box sx={ModalStyle}>
+         <Typography> hello my friend </Typography>
+        </Box> */}
+      </Modal>
     </Box>
   );
 }
@@ -180,9 +214,8 @@ function ClassesTable({ activeProfile, updateActiveClass, activeClass }: Classes
             title: "Actions",
             field: "classId",
             render: (rowData) => {
-
               return (
-                <Button variant={rowData.classID === activeClass?.classId ? "contained" : "outlined" } onClick={() => updateActiveClass(rowData)}>
+                <Button variant={rowData.classId === activeClass?.classId ? "contained" : "text"} onClick={() => updateActiveClass(rowData)}>
                   <PreviewIcon />
                 </Button>
               );
