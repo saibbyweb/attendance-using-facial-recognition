@@ -1,7 +1,7 @@
 import { theme } from "@/App";
 import ProfileSwitch from "@/components/ProfileSwitch";
 import { fetchRemoteData, fetchStudentListInAClass } from "@/helpers/api";
-import { Box, Button, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, Paper, TextField, Typography, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import Table, { TableProps } from "@/components/Table";
 import AddCardIcon from "@mui/icons-material/AddCard";
@@ -11,6 +11,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import ClassesTable from "@/components/Faculty/ClassesTable";
+import { LoadingButton } from "@mui/lab";
+import { UploadFile } from "@mui/icons-material";
 
 /* profile option type */
 export type ProfileOption = {
@@ -144,7 +146,7 @@ const ModalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "70%",
+  width: "80%",
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
@@ -155,6 +157,8 @@ function DetailsPanel({ activeClass }: DetailsPanelProps) {
   const [openAttendanceModal, setOpenAttendanceModal] = useState(false);
   /* student list */
   const [studentList, setStudentList] = useState<Student[]>([]);
+  /* date */
+  const [date, setDate] = useState<Dayjs | null>(null);
 
   /* fetch student list and open modal */
   async function openModalAndFetchStudentList(classId: string) {
@@ -179,28 +183,46 @@ function DetailsPanel({ activeClass }: DetailsPanelProps) {
       <Modal open={openAttendanceModal} onClose={() => setOpenAttendanceModal(false)}>
         <Paper sx={ModalStyle}>
           <Typography variant="h4"> Student List </Typography>
-          {/* student list */}
-          <Box width="80%">
-            <Table
-              title="Classes Table"
-              columns={[
-                { title: "Enrollment No.", field: "enrollmentNo" },
-                { title: "First Name", field: "firstName" },
-                { title: "Last Name", field: "lastName" },
-                { title: "Course Code", field: "courseCode" },
-                { title: "Batch", field: "batch" },
-              ]}
-              data={studentList}
-              enableSelection
-              onSelectionChange={(selectedStudents: Student[]) => console.log(selectedStudents.map((stu) => stu.enrollmentNo))}
-            />
-          </Box>
-          {/* attendance actions */}
-          <Box>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker label="Basic example" value="" onChange={(newValue) => {}} renderInput={(params) => <TextField {...params} />} />
-            </LocalizationProvider>
-          </Box>
+
+          {/* student list and attendance actions */}
+          <Stack direction="row" gap="20px">
+            {/* student list */}
+            <Box width="80%">
+              <Table
+                title="Classes Table"
+                columns={[
+                  { title: "Enrollment No.", field: "enrollmentNo" },
+                  { title: "First Name", field: "firstName" },
+                  { title: "Last Name", field: "lastName" },
+                  { title: "Course Code", field: "courseCode" },
+                  { title: "Batch", field: "batch" },
+                ]}
+                data={studentList}
+                enableSelection
+                onSelectionChange={(selectedStudents: Student[]) => console.log(selectedStudents.map((stu) => stu.enrollmentNo))}
+              />
+            </Box>
+            {/* attendance actions */}
+            <Stack gap="20px" alignItems="space-around" justifyContent="space-between">
+              {/* upload image */}
+              <LoadingButton loading={false} loadingPosition="start" startIcon={<UploadFile />} variant="contained">
+                Upload Class Image
+              </LoadingButton>
+              {/* calendar */}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Select Date"
+                  value={date}
+                  onChange={(newValue) => setDate(newValue!)}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+              {/* submit button */}
+             <LoadingButton loading={false} loadingPosition="start" startIcon={<UploadFile />} variant="contained">
+                Submit Attendance
+              </LoadingButton>
+            </Stack>
+          </Stack>
         </Paper>
       </Modal>
     </Box>
@@ -233,4 +255,3 @@ function FacultyHeader({ profileOptions, activeProfile, updateActiveProfile }: F
     </Box>
   );
 }
-
