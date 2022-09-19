@@ -1,4 +1,3 @@
-import dayjs, { Dayjs } from "dayjs";
 import { DetailsPanelProps, Student } from "@/pages/Faculty";
 import { useState } from "react";
 import { fetchStudentListInAClass } from "@/helpers/api";
