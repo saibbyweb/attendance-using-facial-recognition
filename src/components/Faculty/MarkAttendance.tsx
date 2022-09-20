@@ -34,8 +34,8 @@ export default function MarkAttendance({ studentList, classId }: MarkAttendanceP
   /* error message */
   const [errorMsg, setErrorMsg] = useState("Attendance already updated for this date.");
   /* handle date change */
-  function handleDateChange(value: Dayjs | null) {
-    setDate(value);
+  function handleDateChange(value: any | null) {
+    setDate(value.$d);
     setErrorMsg("");
   }
   /* handle student selection change */

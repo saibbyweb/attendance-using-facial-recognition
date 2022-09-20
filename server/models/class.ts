@@ -1,5 +1,11 @@
-import { mongoose } from "@server/helpers/essentials";
+import { mongoose, ObjectId } from "@server/helpers/essentials";
 import { CommonSchema, DocType, MongoModel } from "@server/types/global";
+
+/* attendance record */
+type AttendanceRecord = {
+  date: string,
+  studentList: Array<string>,
+}
 
 /* Class type */
 export interface Class<T extends DocType = DocType.MONGO> extends CommonSchema {
@@ -9,6 +15,7 @@ export interface Class<T extends DocType = DocType.MONGO> extends CommonSchema {
   course: string;
   batch: string;
   semester: string;
+  attendance: Array<AttendanceRecord> | undefined;
 }
 
 /* class model */
@@ -29,6 +36,11 @@ const schema = new mongoose.Schema<Class, ClassModel>(
     batch: { type: String, required: true },
     /* semester */
     semester: { type: String, required: true },
+    /* attendance */
+    attendance: { 
+        date: String,
+        studentList: Array
+     }
   },
   {
     timestamps: true,
@@ -37,5 +49,7 @@ const schema = new mongoose.Schema<Class, ClassModel>(
 
 /* exporting driver model */
 export const model = mongoose.model<Class, ClassModel>("class", schema);
-export const register = () => console.log("class registered 🎉");
+export const register = () => { 
+  console.log("class registered 🎉")
+};
 export default { model, register };

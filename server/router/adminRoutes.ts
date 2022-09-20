@@ -64,7 +64,7 @@ type GetStudentsList = {
 
 /* get list of students in a class */
 router.post("/getStudentsInAClass", async (req: PostReq<GetStudentsList>, res: Res<Student[]>) => {
-  
+
   let response: Student[] = [];
   /* extract classId from request */
   let { classId } = req.body;
@@ -80,7 +80,15 @@ type UpdateAttendanceReqPayload = {
 }
 
 /* update attendance for a class */
-router.post("/updateAttendance", async(req: PostReq<UpdateAttendanceReqPayload>, res: Res) => {
+router.post("/updateAttendance", async (req: PostReq<UpdateAttendanceReqPayload>, res: Res) => {
   console.log("hi 👋", req.body);
+  let { classId, date, studentList } = req.body;
+  const updateOperation = await db.model("class").findOneAndUpdate({ classId, "attendance.date": { $ne: date } },
+    { $push: { attendance: { date, studentList } } }
+  );
+  console.log(updateOperation)
+  res.send({ msg: 'done' })
 })
+
+
 export default router;
