@@ -8,6 +8,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState } from "react";
 import { Dayjs } from "dayjs";
 import { Student } from "@/pages/Faculty";
+import { updateAttendance } from "@/helpers/api";
 
 const ModalStyle = {
   position: "absolute" as "absolute",
@@ -22,9 +23,12 @@ const ModalStyle = {
 
 type MarkAttendanceProps = {
   studentList: Student[];
+  classId: string;
 };
 
-export default function MarkAttendance({ studentList }: MarkAttendanceProps) {
+export default function MarkAttendance({ studentList, classId }: MarkAttendanceProps) {
+  /* selected student list */
+  const [selectedStudentList, setSelectedStudentList] = useState<string[]>([]);
   /* date */
   const [date, setDate] = useState<Dayjs | null>(null);
   /* error message */
@@ -34,9 +38,26 @@ export default function MarkAttendance({ studentList }: MarkAttendanceProps) {
     setDate(value);
     setErrorMsg("");
   }
+  /* handle student selection change */
+  function handleStudentSelectionChange(selectedStudents: Student[]) {
+    setErrorMsg("");
+    const enrollmentNos = selectedStudents.map((stu) => stu.enrollmentNo);
+    setSelectedStudentList(enrollmentNos);
+  }
+
   /* handle submit attendance */
   function handleSubmitAttendance() {
-    
+    /* if no student selected */
+    if(!selectedStudentList.length) {
+        setErrorMsg('Please select atleast one student')
+        return;
+    }
+    /* if no date selected */
+    if(!date) {
+        setErrorMsg("Plese select a date first");
+        return;
+    }
+    updateAttendance(classId, date?.toString()!, selectedStudentList);
   }
 
   return (
@@ -58,7 +79,7 @@ export default function MarkAttendance({ studentList }: MarkAttendanceProps) {
             ]}
             data={studentList}
             enableSelection
-            onSelectionChange={(selectedStudents: Student[]) => console.log(selectedStudents.map((stu) => stu.enrollmentNo))}
+            onSelectionChange={handleStudentSelectionChange}
           />
         </Box>
         {/* attendance actions */}
@@ -69,7 +90,7 @@ export default function MarkAttendance({ studentList }: MarkAttendanceProps) {
           </LoadingButton>
           {/* calendar */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker label="Select Date" value={date} onChange={handleDateChange} renderInput={(params) => <TextField {...params} />} />
+            <DatePicker label="Select Date" value={date} onChange={handleDateChange} renderInput={params => <TextField {...params} />} />
           </LocalizationProvider>
           {/* submit button */}
           <LoadingButton loading={false} loadingPosition="start" startIcon={<Send />} variant="contained" onClick={handleSubmitAttendance}>

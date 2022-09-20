@@ -64,11 +64,23 @@ type GetStudentsList = {
 
 /* get list of students in a class */
 router.post("/getStudentsInAClass", async (req: PostReq<GetStudentsList>, res: Res<Student[]>) => {
-  console.log("hi 👋", req.body);
+  
   let response: Student[] = [];
   /* extract classId from request */
   let { classId } = req.body;
   response = await db.model("student").find({ 'classes.value': classId }).lean()
   res.send({ msg: "Done", data: response })
+})
+
+/* update attendance request payload */
+type UpdateAttendanceReqPayload = {
+  classId: string,
+  date: string,
+  studentList: string[]
+}
+
+/* update attendance for a class */
+router.post("/updateAttendance", async(req: PostReq<UpdateAttendanceReqPayload>, res: Res) => {
+  console.log("hi 👋", req.body);
 })
 export default router;

@@ -35,7 +35,7 @@ export async function fetchStudentListInAClass(classId: string) {
 }
 
 /* update attendance for a class */
-export async function updateAttendance(classId: string, date: string, studentList:Student[]) {
+export async function updateAttendance(classId: string, date: string, studentList:string[]) {
   const response = await defaultAxios.post(UPDATE_ATTENDANCE_API, { classId, date, studentList});
   return response.data;
 }
