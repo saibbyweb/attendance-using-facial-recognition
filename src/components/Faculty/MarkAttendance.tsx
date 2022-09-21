@@ -5,10 +5,11 @@ import { UploadFile, Send, PhotoCamera } from "@mui/icons-material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState,ChangeEvent, forwardRef, ForwardedRef } from "react";
 import { Dayjs } from "dayjs";
 import { Student } from "@/pages/Faculty";
 import { updateAttendance } from "@/helpers/api";
+import { loadRequiredFaceAPIModel, processImage } from "@/helpers/faceRecognition";
 
 const ModalStyle = {
   position: "absolute" as "absolute",
@@ -26,7 +27,7 @@ type MarkAttendanceProps = {
   classId: string;
 };
 
-export default function MarkAttendance({ studentList, classId }: MarkAttendanceProps) {
+export default forwardRef(function MarkAttendance({ studentList, classId }: MarkAttendanceProps, ref: ForwardedRef<any>) {
   /* selected student list */
   const [selectedStudentList, setSelectedStudentList] = useState<string[]>([]);
   /* date */
@@ -34,7 +35,21 @@ export default function MarkAttendance({ studentList, classId }: MarkAttendanceP
   /* error message */
   const [errorMsg, setErrorMsg] = useState("Attendance already updated for this date.");
   /* ref for class image */
-  const classImage = useRef<HTMLInputElement | null>(null);
+  // const classImage = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    loadRequiredFaceAPIModel().then(_ => alert('Loaded'))
+  },[])
+  
+  /* handle class image change */
+  async function handleClassImageChange(event: ChangeEvent<HTMLInputElement>) {
+    console.log(event)
+    // if(!event || event.files![0] === null)
+    //   return;
+    // const file = event.files![0];
+    // processImage(file).then(_ => alert(_));
+  }
+
   /* handle date change */
   function handleDateChange(value: any | null) {
     setDate(value.$d);
@@ -94,7 +109,7 @@ export default function MarkAttendance({ studentList, classId }: MarkAttendanceP
           <Button variant="contained" component="label">
             <PhotoCamera />
             &nbsp; Upload Class Image
-            <input ref={classImage} hidden accept="image/*" multiple type="file" />
+            <input onChange={handleClassImageChange} hidden accept="image/*" multiple type="file" />
           </Button>
           {/* calendar */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -112,4 +127,4 @@ export default function MarkAttendance({ studentList, classId }: MarkAttendanceP
       </Stack>
     </Paper>
   );
-}
+});

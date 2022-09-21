@@ -34,6 +34,7 @@ export default function DetailsPanel({ activeClass }: DetailsPanelProps) {
       </Box>
       {/* attendance modal */}
       <Modal open={openAttendanceModal} onClose={() => setOpenAttendanceModal(false)}>
+
             <MarkAttendance classId={activeClass.classId} studentList={studentList}/>
       </Modal>
     </Box>
