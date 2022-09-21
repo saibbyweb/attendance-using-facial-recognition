@@ -5,11 +5,12 @@ import { UploadFile, Send, PhotoCamera } from "@mui/icons-material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useEffect, useRef, useState,ChangeEvent, forwardRef, ForwardedRef } from "react";
+import React, { useEffect, useRef, useState,ChangeEvent, forwardRef, ForwardedRef } from "react";
 import { Dayjs } from "dayjs";
 import { Student } from "@/pages/Faculty";
 import { updateAttendance } from "@/helpers/api";
-import { loadRequiredFaceAPIModel, processImage } from "@/helpers/faceRecognition";
+import { generateFaceMatcher, loadRequiredFaceAPIModels, detectFaces } from "@/helpers/faceRecognition";
+import { FaceMatcher } from "face-api.js";
 
 const ModalStyle = {
   position: "absolute" as "absolute",
@@ -34,20 +35,27 @@ export default forwardRef(function MarkAttendance({ studentList, classId }: Mark
   const [date, setDate] = useState<Dayjs | null>(null);
   /* error message */
   const [errorMsg, setErrorMsg] = useState("Attendance already updated for this date.");
-  /* ref for class image */
-  // const classImage = useRef<HTMLInputElement | null>(null);
-
+  /* face matcher */
+  const faceMatcher = useRef<FaceMatcher>();
+  /* load face api models and labels */
+  async function loadFaceAPIModelsAndLabels() {
+    await loadRequiredFaceAPIModels();
+    faceMatcher.current = await generateFaceMatcher();
+    alert('models and face matcher generated')
+  }
+  /*  */
   useEffect(() => {
-    loadRequiredFaceAPIModel().then(_ => alert('Loaded'))
+      loadFaceAPIModelsAndLabels();
   },[])
   
   /* handle class image change */
-  async function handleClassImageChange(event: ChangeEvent<HTMLInputElement>) {
-    console.log(event)
-    // if(!event || event.files![0] === null)
-    //   return;
-    // const file = event.files![0];
-    // processImage(file).then(_ => alert(_));
+  async function handleClassImageChange(event: React.SyntheticEvent<HTMLInputElement>) {
+    if(!event.currentTarget.files)
+      return;
+    const file = event.currentTarget.files[0];
+    const detections = await detectFaces(file);
+    const results = detections.map(d => faceMatcher.current!.findBestMatch(d.descriptor))
+    results.forEach(result => console.log(result.toString()))
   }
 
   /* handle date change */
