@@ -12,14 +12,12 @@ export default function DetailsPanel({ activeClass }: DetailsPanelProps) {
   const [openAttendanceModal, setOpenAttendanceModal] = useState(false);
   /* student list */
   const [studentList, setStudentList] = useState<Student[]>([]);
-
   /* fetch student list and open modal */
   async function openModalAndFetchStudentList(classId: string) {
     setOpenAttendanceModal(true);
     const remoteStudentList = await fetchStudentListInAClass(classId);
     setStudentList(remoteStudentList.data);
   }
-
   return (
     <Box mt="10px" width="33%" borderRadius={2} sx={{ backgroundColor: "white" }}>
       <Typography variant="h5" color={theme.palette.primary.dark}>
@@ -32,10 +30,10 @@ export default function DetailsPanel({ activeClass }: DetailsPanelProps) {
           Take Attendance
         </Button>
       </Box>
+
       {/* attendance modal */}
       <Modal open={openAttendanceModal} onClose={() => setOpenAttendanceModal(false)}>
-
-            <MarkAttendance classId={activeClass.classId} studentList={studentList}/>
+            <MarkAttendance classId={activeClass.classId} studentList={studentList} />
       </Modal>
     </Box>
   );
