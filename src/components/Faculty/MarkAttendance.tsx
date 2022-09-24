@@ -26,7 +26,7 @@ const ModalStyle = {
 type MarkAttendanceProps = {
   studentList: Student[];
   classId: string;
-  markRecognizedStudents: Function;
+  markRecognizedStudents(recognizedStudents: string[]) : string[];
   faceMatcher: MutableRefObject<FaceMatcher | undefined>;
 };
 
@@ -36,9 +36,9 @@ export default forwardRef(function MarkAttendance({ studentList, classId, markRe
   /* date */
   const [date, setDate] = useState<Dayjs | null>(null);
   /* error message */
-  const [errorMsg, setErrorMsg] = useState("Attendance already updated for this date.");
-  /* loading */
-  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  /* response msg */
+  const [responseMsg, setResponseMsg] = useState({ show: false, msg: "" });
   /* upload button ref */
   const uploadButton = useRef<HTMLInputElement | null>(null);
 
@@ -50,12 +50,14 @@ export default forwardRef(function MarkAttendance({ studentList, classId, markRe
     const detections = await detectFaces(file);
     const results = detections.map(d => faceMatcher.current!.findBestMatch(d.descriptor))
     const recognizedStudents = results.map(result => result.label).filter(enrollmentNo => enrollmentNo !== "unknown")
-    markRecognizedStudents(recognizedStudents);
+    const matchedEnrollmentNos = markRecognizedStudents(recognizedStudents);
     
     /* reset file selection */
     if(uploadButton.current)
       uploadButton.current.value = "";
 
+    /* update student selection */
+    setSelectedStudentList([...new Set([...selectedStudentList, ...matchedEnrollmentNos])])
   }
 
   /* handle date change */
@@ -71,7 +73,7 @@ export default forwardRef(function MarkAttendance({ studentList, classId, markRe
   }
 
   /* handle submit attendance */
-  function handleSubmitAttendance() {
+  async function handleSubmitAttendance() {
     /* if no student selected */
     if (!selectedStudentList.length) {
       setErrorMsg("Please select atleast one student");
@@ -82,7 +84,20 @@ export default forwardRef(function MarkAttendance({ studentList, classId, markRe
       setErrorMsg("Plese select a date first");
       return;
     }
-    updateAttendance(classId, date?.toString()!, selectedStudentList);
+    /* show dialog depicting network call initialization  */
+    setResponseMsg({show: true, msg: "Updating attendance"})
+    const response = await updateAttendance(classId, date?.toString()!, selectedStudentList);
+    
+    /* show error message and clear response dialog */
+    if(response.msg === "already_updated") {
+      setErrorMsg("Attendance already updated for this date and class");
+      setResponseMsg({show: false, msg: ""});
+      return;
+    }
+    
+    /* show confirmation dialog */
+    setResponseMsg({show: true, msg: "Database records updated"});
+    setTimeout(() => setResponseMsg({show: false, msg: ""}), 1500);
   }
 
   return (
@@ -127,6 +142,10 @@ export default forwardRef(function MarkAttendance({ studentList, classId, markRe
           </Typography>
         </Stack>
       </Stack>
+
+      <Dialog onClose={() => setResponseMsg({ show: false, msg: "" })} open={responseMsg.show}>
+        <DialogTitle>{responseMsg.msg}</DialogTitle>
+      </Dialog>
     </Paper>
   );
 });

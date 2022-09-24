@@ -38,20 +38,26 @@ export default function DetailsPanel({ activeClass }: DetailsPanelProps) {
     setStudentList(remoteStudentList.data);
   }
   /* check recognized students */
-  function markRecognizedStudents(recognizedStudents: string[]) {
-    let matchedRecords = 0;
+  function markRecognizedStudents(recognizedStudents: string[]): string[] {
+    let matchedEnrollmentNos: string[] = [];
     const studentListCopy: Student[] = JSON.parse(JSON.stringify(studentList));
+
     studentListCopy.forEach((student, index) => {
       let foundStudent = recognizedStudents.find((enrollmentNo) => student.enrollmentNo === enrollmentNo);
       if (foundStudent) {
-        matchedRecords++;
         studentListCopy[index] = { ...student, tableData: { checked: true } };
+        matchedEnrollmentNos.push(student.enrollmentNo)
       }
     });
-    if (matchedRecords > 0) setStudentList(studentListCopy);
+    
+    /* update student list (table data) */
+    if (matchedEnrollmentNos.length > 0) setStudentList(studentListCopy);
 
-    setResponseMsg({ show: true, msg: `${matchedRecords} record(s) matched` });
+    /* show response dialog for some seconds */
+    setResponseMsg({ show: true, msg: `${matchedEnrollmentNos.length} record(s) matched` });
     setTimeout(() => setResponseMsg({ show: false, msg: "" }), 1500);
+
+    return matchedEnrollmentNos;
   }
 
   return (

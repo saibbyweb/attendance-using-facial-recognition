@@ -86,8 +86,8 @@ router.post("/updateAttendance", async (req: PostReq<UpdateAttendanceReqPayload>
   const updateOperation = await db.model("class").findOneAndUpdate({ classId, "attendance.date": { $ne: date } },
     { $push: { attendance: { date, studentList } } }
   );
-  console.log(updateOperation)
-  res.send({ msg: 'done' })
+  // console.log(updateOperation)
+  res.send({ msg: updateOperation !== null ? 'done' : 'already_updated'});
 })
 
 
