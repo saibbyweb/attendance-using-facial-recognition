@@ -1,15 +1,15 @@
 import { Box, Paper, TextField, Typography, Stack, Button, Dialog, DialogTitle } from "@mui/material";
 import Table from "@/components/Table";
 import { LoadingButton } from "@mui/lab";
-import { UploadFile, Send, PhotoCamera } from "@mui/icons-material";
+import { Send, PhotoCamera } from "@mui/icons-material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import React, { useEffect, useRef, useState, forwardRef, ForwardedRef } from "react";
+import React, { useRef, useState, forwardRef, ForwardedRef, MutableRefObject } from "react";
 import { Dayjs } from "dayjs";
 import { Student } from "@/pages/Faculty";
 import { updateAttendance } from "@/helpers/api";
-import { generateFaceMatcher, loadRequiredFaceAPIModels, detectFaces } from "@/helpers/faceRecognition";
+import { detectFaces } from "@/helpers/faceRecognition";
 import { FaceMatcher } from "face-api.js";
 
 const ModalStyle = {
@@ -27,9 +27,10 @@ type MarkAttendanceProps = {
   studentList: Student[];
   classId: string;
   markRecognizedStudents: Function;
+  faceMatcher: MutableRefObject<FaceMatcher | undefined>;
 };
 
-export default forwardRef(function MarkAttendance({ studentList, classId, markRecognizedStudents }: MarkAttendanceProps, ref: ForwardedRef<any>) {
+export default forwardRef(function MarkAttendance({ studentList, classId, markRecognizedStudents, faceMatcher }: MarkAttendanceProps, ref: ForwardedRef<any>) {
   /* selected student list */
   const [selectedStudentList, setSelectedStudentList] = useState<string[]>([]);
   /* date */
@@ -40,21 +41,7 @@ export default forwardRef(function MarkAttendance({ studentList, classId, markRe
   const [loading, setLoading] = useState(false);
   /* upload button ref */
   const uploadButton = useRef<HTMLInputElement | null>(null);
-  /* face matcher */
-  const faceMatcher = useRef<FaceMatcher>();
-  /* load face api models and labels */
-  async function loadFaceAPIModelsAndLabels() {
-    setLoading(true);
-    await loadRequiredFaceAPIModels();
-    faceMatcher.current = await generateFaceMatcher();
-    setLoading(false);
-  }
 
-  /* load face api models and labels */
-  useEffect(() => {
-      loadFaceAPIModelsAndLabels();
-  },[])
-  
   /* handle class image change */
   async function handleClassImageChange(event: React.SyntheticEvent<HTMLInputElement>) {
     if(!event.currentTarget.files)
@@ -62,11 +49,10 @@ export default forwardRef(function MarkAttendance({ studentList, classId, markRe
     const file = event.currentTarget.files[0];
     const detections = await detectFaces(file);
     const results = detections.map(d => faceMatcher.current!.findBestMatch(d.descriptor))
-    // results.forEach(result => console.log(result.label))
     const recognizedStudents = results.map(result => result.label).filter(enrollmentNo => enrollmentNo !== "unknown")
-    console.log(recognizedStudents);
     markRecognizedStudents(recognizedStudents);
-
+    
+    /* reset file selection */
     if(uploadButton.current)
       uploadButton.current.value = "";
 
@@ -141,13 +127,6 @@ export default forwardRef(function MarkAttendance({ studentList, classId, markRe
           </Typography>
         </Stack>
       </Stack>
-      
-      {/* loading dialog */}
-      <Dialog onClose={() => setLoading(false)} open={loading}>
-      <DialogTitle>Loading Face Detection Models & Labels...</DialogTitle>
-     </Dialog>
-
-
     </Paper>
   );
 });

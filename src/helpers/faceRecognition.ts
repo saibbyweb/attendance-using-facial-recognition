@@ -17,7 +17,8 @@ export async function detectFaces(image: File) {
 
 /* load labelled images */
 function loadLabeledImages() {
-  const labels = ['20117300022'];
+  const labels = ['20117300022','2011036728'];
+  
   return Promise.all(
     labels.map(async label => {
       const descriptions = []
