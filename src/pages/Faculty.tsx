@@ -117,6 +117,9 @@ export type Student = {
   courseCode: string;
   batch: string;
   classes: any;
+  tableData?: {
+    checked: boolean
+  }
 };
 
 /* class details */

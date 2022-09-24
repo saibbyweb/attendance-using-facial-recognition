@@ -26,9 +26,10 @@ const ModalStyle = {
 type MarkAttendanceProps = {
   studentList: Student[];
   classId: string;
+  markRecognizedStudents: Function;
 };
 
-export default forwardRef(function MarkAttendance({ studentList, classId }: MarkAttendanceProps, ref: ForwardedRef<any>) {
+export default forwardRef(function MarkAttendance({ studentList, classId, markRecognizedStudents }: MarkAttendanceProps, ref: ForwardedRef<any>) {
   /* selected student list */
   const [selectedStudentList, setSelectedStudentList] = useState<string[]>([]);
   /* date */
@@ -37,6 +38,8 @@ export default forwardRef(function MarkAttendance({ studentList, classId }: Mark
   const [errorMsg, setErrorMsg] = useState("Attendance already updated for this date.");
   /* loading */
   const [loading, setLoading] = useState(false);
+  /* upload button ref */
+  const uploadButton = useRef<HTMLInputElement | null>(null);
   /* face matcher */
   const faceMatcher = useRef<FaceMatcher>();
   /* load face api models and labels */
@@ -59,7 +62,14 @@ export default forwardRef(function MarkAttendance({ studentList, classId }: Mark
     const file = event.currentTarget.files[0];
     const detections = await detectFaces(file);
     const results = detections.map(d => faceMatcher.current!.findBestMatch(d.descriptor))
-    results.forEach(result => console.log(result.toString()))
+    // results.forEach(result => console.log(result.label))
+    const recognizedStudents = results.map(result => result.label).filter(enrollmentNo => enrollmentNo !== "unknown")
+    console.log(recognizedStudents);
+    markRecognizedStudents(recognizedStudents);
+
+    if(uploadButton.current)
+      uploadButton.current.value = "";
+
   }
 
   /* handle date change */
@@ -115,7 +125,7 @@ export default forwardRef(function MarkAttendance({ studentList, classId }: Mark
           <Button variant="contained" component="label">
             <PhotoCamera />
             &nbsp; Upload Class Image
-            <input onChange={handleClassImageChange} hidden accept="image/*" multiple type="file" />
+            <input ref={uploadButton} onChange={handleClassImageChange} hidden accept="image/*" multiple type="file" />
           </Button>
           {/* calendar */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>

@@ -18,6 +18,18 @@ export default function DetailsPanel({ activeClass }: DetailsPanelProps) {
     const remoteStudentList = await fetchStudentListInAClass(classId);
     setStudentList(remoteStudentList.data);
   }
+  /* check recognized students */
+  function markRecognizedStudents(recognizedStudents: string[]) {
+    const studentListCopy: Student[] = JSON.parse(JSON.stringify(studentList));
+    studentListCopy.forEach((student, index) => {
+      let foundStudent = recognizedStudents.find(enrollmentNo => student.enrollmentNo === enrollmentNo)
+      if(foundStudent) 
+        studentListCopy[index] = {...student, tableData: { checked: true }}
+    })
+    // console.log(studentListCopy);
+    setStudentList(studentListCopy)
+  }
+
   return (
     <Box mt="10px" width="33%" borderRadius={2} sx={{ backgroundColor: "white" }}>
       <Typography variant="h5" color={theme.palette.primary.dark}>
@@ -33,7 +45,7 @@ export default function DetailsPanel({ activeClass }: DetailsPanelProps) {
 
       {/* attendance modal */}
       <Modal open={openAttendanceModal} onClose={() => setOpenAttendanceModal(false)}>
-            <MarkAttendance classId={activeClass.classId} studentList={studentList} />
+            <MarkAttendance classId={activeClass.classId} studentList={studentList} markRecognizedStudents={markRecognizedStudents} />
       </Modal>
     </Box>
   );
