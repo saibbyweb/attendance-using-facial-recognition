@@ -22,7 +22,7 @@ export default function Faculty() {
       value: "fetching...",
     },
   ]);
-  
+
   /* active profile  */
   const [activeProfile, setActiveProfile] = useState<FacultyMember>(profileOptions[0]);
 
@@ -75,7 +75,7 @@ export default function Faculty() {
     <>
       {/* whole page */}
       <Box mt="7vh">
-        {/* faculty header */}
+        {/* section header */}
         <SectionHeader profileOptions={profileOptions} activeProfile={activeProfile} updateActiveProfile={updateActiveProfile} />
         {/* content part */}
         <Box sx={{ display: "flex" }} gap={1}>
@@ -86,7 +86,7 @@ export default function Faculty() {
         </Box>
       </Box>
     </>
-  );
+  )
 }
 /* student */
 export type Student = {
