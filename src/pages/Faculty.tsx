@@ -3,8 +3,7 @@ import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import ClassesTable from "@/components/Faculty/ClassesTable";
 import DetailsPanel from "@/components/Faculty/DetailsPanel";
-import { SectionHeader, ProfileOption } from "@/components/SectionHeader";
-
+import SectionHeader, { ProfileOption } from "@/components/SectionHeader";
 
 export type FacultyMember = ProfileOption & {
   employeeId?: string;
@@ -14,7 +13,6 @@ export type FacultyMember = ProfileOption & {
 };
 
 export default function Faculty() {
-
   /*  profile options  */
   const [profileOptions, setProfileList] = useState<FacultyMember[]>([
     {
@@ -28,6 +26,8 @@ export default function Faculty() {
 
   /* active class */
   const [activeClass, setActiveClass] = useState<ClassDetails>();
+  /* loaded */
+  const [loaded, setLoaded] = useState(false);
 
   let classesData: any = [];
 
@@ -54,6 +54,7 @@ export default function Faculty() {
     }));
     setProfileList(profileOptions);
     setActiveProfile(profileOptions[0]);
+    setLoaded(true);
   }
 
   /* fetch all faculty data once on being mounted */
@@ -80,13 +81,13 @@ export default function Faculty() {
         {/* content part */}
         <Box sx={{ display: "flex" }} gap={1}>
           {/* classes table */}
-          <ClassesTable activeProfile={activeProfile} activeClass={activeClass} updateActiveClass={updateActiveClass} />
+          {loaded && <ClassesTable activeProfile={activeProfile} activeClass={activeClass} updateActiveClass={updateActiveClass} />}
           {/* details panel */}
           {activeClass && <DetailsPanel activeClass={activeClass!} />}
         </Box>
       </Box>
     </>
-  )
+  );
 }
 /* student */
 export type Student = {
@@ -98,8 +99,8 @@ export type Student = {
   batch: string;
   classes: any;
   tableData?: {
-    checked: boolean
-  }
+    checked: boolean;
+  };
 };
 
 /* class details */

@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "vite",
     "dev:server": "NODE_ENV=development nodemon --watch ./ --exec esr server/index.ts",
-    "build": "tsc && vite build",
+    "frontend:build": "tsc && vite build",
+    "server:build": "NODE_ENV=production node serverBundle.js",
+    "build": "yarn run frontend:build && yarn run server:build",
+    "go": "yarn run build && yarn run start",
+    "start": "NODE_ENV=production node dist/server.js",
     "preview": "vite preview"
   },
   "dependencies": {

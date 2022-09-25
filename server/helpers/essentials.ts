@@ -49,7 +49,7 @@ export { mongoose };
 export const mongoConnectionString = process.env.MONGO_CONNECTION_STRING;
 
 /* network port  */
-export const port = process.env.PORT || 4000;
+export const port = process.env.NODE_ENV === "production" ? 80 : (process.env.PORT || 4000);
 
 /* mongodb object id */
 export const ObjectId = mongoose.Schema.Types.ObjectId;

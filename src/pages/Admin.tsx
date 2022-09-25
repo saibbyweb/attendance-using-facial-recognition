@@ -52,7 +52,8 @@ export default function Admin() {
                 }) 
                 break;
         }
-        setActiveTableData(data.docs);
+        if(data)
+            setActiveTableData(data.docs);
     }
 
     async function fetchClasses() {

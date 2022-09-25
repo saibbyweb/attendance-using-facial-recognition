@@ -16,7 +16,7 @@ type SectionHeaderProps = {
   };
 
 /* faculty header component */
-export function SectionHeader({ profileOptions, activeProfile, updateActiveProfile }: SectionHeaderProps) {
+export default function SectionHeader({ profileOptions, activeProfile, updateActiveProfile }: SectionHeaderProps) {
     return (
       <Box
         padding="10px"

@@ -3,10 +3,11 @@ import { Routes, Route } from 'react-router-dom'
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from "@mui/material/styles";
 
-import Faculty from '@/pages/Faculty'
+// import Faculty from '@/pages/Faculty'
 import Homepage from '@/pages/Homepage'
 import ResponsiveAppBar from '@/components/AppBar'
 import Student from '@/pages/Student'
+import Faculty from './pages/Faculty';
 import Admin from '@/pages/Admin'
 
 export const theme = createTheme({

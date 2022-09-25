@@ -1,5 +1,5 @@
 import ClassesTable from "@/components/Faculty/ClassesTable";
-import { ProfileOption, SectionHeader } from "@/components/SectionHeader";
+import SectionHeader, {  ProfileOption } from "@/components/SectionHeader";
 import { fetchRemoteData } from "@/helpers/api";
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -19,6 +19,9 @@ export default function Student() {
 
   /* active class */
   const [activeClass, setActiveClass] = useState<ClassDetails>();
+
+   /* loaded */
+   const [loaded, setLoaded] = useState(false);
 
   let classesData: any = [];
 
@@ -74,6 +77,7 @@ export default function Student() {
     }));
     setProfileList(profileOptions);
     setActiveProfile(profileOptions[0]);
+    setLoaded(true);
   }
 
   /* update active profile */
@@ -106,7 +110,7 @@ export default function Student() {
         {/* content part */}
         <Box sx={{ display: "flex" }} gap={1}>
           {/* classes table */}
-          <ClassesTable width="100%" extraColumns={extraColumns} activeProfile={activeProfile} activeClass={activeClass} updateActiveClass={updateActiveClass} />
+          { loaded && <ClassesTable width="100%" extraColumns={extraColumns} activeProfile={activeProfile} activeClass={activeClass} updateActiveClass={updateActiveClass} /> }
           {/* details panel */}
         </Box>
       </Box>

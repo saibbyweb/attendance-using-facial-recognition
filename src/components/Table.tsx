@@ -1,6 +1,5 @@
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core";
+import { MuiThemeProvider } from "@material-ui/core";
 import MaterialTable from "material-table";
-
 import { createTheme } from '@material-ui/core/styles'
 
 const theme = createTheme({
@@ -13,8 +12,6 @@ const theme = createTheme({
         },
     }
 });
-
-
 
 export type TableProps<T> = {
     data: Array<T>;
@@ -55,25 +52,11 @@ export default function Table<T extends { id: string }>({
     };
 
     return (
-        <MuiThemeProvider theme={theme}>
+         <MuiThemeProvider theme={theme}>
             <MaterialTable
-                style={{
-                    // backgroundColor: theme.palette.primary.dark,
-                    // color: 'white'
-                }}
-
                 title={title}
                 data={data}
-                columns={columns.map((column => ({
-                    ...column,
-                    
-                    // cellStyle: {
-                    //     color: '#FFF'
-                    //   },
-                    // headerStyle: {
-                    //     backgroundColor: theme.palette.secondary.contrastText,
-                    // }
-                })))}
+                columns={columns}
                 editable={{
                     onRowAdd: onRowAdd ? internalRowAdd : undefined,
                     onRowDelete: onRowDelete ? internalRowDelete : undefined,
@@ -89,7 +72,7 @@ export default function Table<T extends { id: string }>({
                     onSelectionChange && onSelectionChange(rows);
                 }}
             />
-        </MuiThemeProvider>
+           </MuiThemeProvider> 
     );
 
 }
