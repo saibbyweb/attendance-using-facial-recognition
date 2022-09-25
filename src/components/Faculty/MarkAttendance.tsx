@@ -96,7 +96,7 @@ export default forwardRef(function MarkAttendance({ studentList, classId, markRe
     }
     
     /* show confirmation dialog */
-    setResponseMsg({show: true, msg: "Database records updated"});
+    setResponseMsg({show: true, msg: "✅ Database records updated"});
     setTimeout(() => setResponseMsg({show: false, msg: ""}), 1500);
   }
 
