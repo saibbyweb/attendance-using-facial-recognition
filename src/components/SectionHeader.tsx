@@ -27,7 +27,7 @@ export function SectionHeader({ profileOptions, activeProfile, updateActiveProfi
         justifyContent="space-around"
         bgcolor="white"
       >
-        <Typography variant="h4" color={theme.palette.primary.dark} sx={{ width: "50%" }}>
+        <Typography variant="h5" color={theme.palette.primary.dark} sx={{ width: "50%" }}>
           👋 Hi, {activeProfile.label}
         </Typography>
         <ProfileSwitch options={profileOptions} updateActiveProfile={updateActiveProfile} activeProfile={activeProfile} />

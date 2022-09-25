@@ -1,7 +1,9 @@
+import ClassesTable from "@/components/Faculty/ClassesTable";
 import { ProfileOption, SectionHeader } from "@/components/SectionHeader";
 import { fetchRemoteData } from "@/helpers/api";
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
+import { ClassDetails } from "@/pages/Faculty";
 
 export default function Student() {
   /*  profile options  */
@@ -15,6 +17,9 @@ export default function Student() {
   /* active profile  */
   const [activeProfile, setActiveProfile] = useState<ProfileOption>(profileOptions[0]);
 
+  /* active class */
+  const [activeClass, setActiveClass] = useState<ClassDetails>();
+
   let classesData: any = [];
 
   /* function to fetch all classes data */
@@ -24,13 +29,51 @@ export default function Student() {
     fetchStudentData();
   }
 
+  /* find class detail by id */
+  function getClassDetails(classId: string) {
+    return classesData.find((classPoint: any) => classPoint.classId === classId);
+  }
+
+  /* attendance record */
+  type AttendanceRecord = {
+    date: string,
+    studentList: string[]
+  }
+
+  /* calculate attendance */
+  function calculateAttendance(attendance: AttendanceRecord[], enrollmentNo: string) {
+    /* attendance data  */
+    const attendanceData = {
+        totalClasses: attendance.length,
+        attendedClasses: 0,
+        percentage: 0
+    }
+    
+    /* calculate attended classes */
+    attendance.forEach(record => {
+        // console.log(record.studentList, enrollmentNo)
+        if(record.studentList.includes(enrollmentNo))
+            attendanceData.attendedClasses++;
+    })
+
+    /* calculate percentage */
+    attendanceData.percentage = (attendanceData.attendedClasses / attendanceData.totalClasses) * 100;
+    console.log(attendanceData)
+    return attendanceData;
+  }
+
   /* fetch student data */
   async function fetchStudentData() {
     const { data } = await fetchRemoteData("student");
-    const profileOptions = data.docs.map((point: any) => ({
-      ...point,
-      label: point.firstName + " " + point.lastName,
-      value: point.enrollmentNo,
+    const profileOptions = data.docs.map((student: any) => ({
+      ...student,
+      label: student.firstName + " " + student.lastName + ` (${student.enrollmentNo})`,
+      value: student.enrollmentNo,
+      classes: student.classes.map((classPoint: any) => {
+        const classData = getClassDetails(classPoint.value);
+        calculateAttendance(classData.attendance, student.enrollmentNo)
+        return classData;
+      }),
     }));
     setProfileList(profileOptions);
     setActiveProfile(profileOptions[0]);
@@ -41,6 +84,11 @@ export default function Student() {
     setActiveProfile(option);
   }
 
+  /* update active class */
+  function updateActiveClass(classDetails: ClassDetails) {
+    setActiveClass(classDetails);
+  }
+
   useEffect(() => {
     fetchClassesData();
   }, []);
@@ -49,8 +97,14 @@ export default function Student() {
     <>
       {/* whole page */}
       <Box mt="7vh">
-         {/* section header */}
-         <SectionHeader profileOptions={profileOptions} activeProfile={activeProfile} updateActiveProfile={updateActiveProfile} />
+        {/* section header */}
+        <SectionHeader profileOptions={profileOptions} activeProfile={activeProfile} updateActiveProfile={updateActiveProfile} />
+        {/* content part */}
+        <Box sx={{ display: "flex" }} gap={1}>
+          {/* classes table */}
+          <ClassesTable activeProfile={activeProfile} activeClass={activeClass} updateActiveClass={updateActiveClass} />
+          {/* details panel */}
+        </Box>
       </Box>
     </>
   );
