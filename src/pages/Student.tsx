@@ -36,29 +36,26 @@ export default function Student() {
 
   /* attendance record */
   type AttendanceRecord = {
-    date: string,
-    studentList: string[]
-  }
+    date: string;
+    studentList: string[];
+  };
 
   /* calculate attendance */
   function calculateAttendance(attendance: AttendanceRecord[], enrollmentNo: string) {
     /* attendance data  */
     const attendanceData = {
-        totalClasses: attendance.length,
-        attendedClasses: 0,
-        percentage: 0
-    }
-    
+      totalClasses: attendance.length,
+      attendedClasses: 0,
+      percentage: "",
+    };
+
     /* calculate attended classes */
-    attendance.forEach(record => {
-        // console.log(record.studentList, enrollmentNo)
-        if(record.studentList.includes(enrollmentNo))
-            attendanceData.attendedClasses++;
-    })
+    attendance.forEach((record) => {
+      if (record.studentList.includes(enrollmentNo)) attendanceData.attendedClasses++;
+    });
 
     /* calculate percentage */
-    attendanceData.percentage = (attendanceData.attendedClasses / attendanceData.totalClasses) * 100;
-    console.log(attendanceData)
+    attendanceData.percentage = ((attendanceData.attendedClasses / attendanceData.totalClasses) * 100).toFixed(2) + "%";
     return attendanceData;
   }
 
@@ -71,8 +68,8 @@ export default function Student() {
       value: student.enrollmentNo,
       classes: student.classes.map((classPoint: any) => {
         const classData = getClassDetails(classPoint.value);
-        calculateAttendance(classData.attendance, student.enrollmentNo)
-        return classData;
+        const attendanceData = calculateAttendance(classData.attendance, student.enrollmentNo);
+        return { ...classData, ...attendanceData };
       }),
     }));
     setProfileList(profileOptions);
@@ -92,6 +89,13 @@ export default function Student() {
   useEffect(() => {
     fetchClassesData();
   }, []);
+    
+  /* extra columns for classes table */
+  const extraColumns = [
+    { title: "Total Classes", field: "totalClasses" },
+    { title: "Attended Classes", field: "attendedClasses" },
+    { title: "Percentage", field: "percentage" },
+  ];
 
   return (
     <>
@@ -102,7 +106,7 @@ export default function Student() {
         {/* content part */}
         <Box sx={{ display: "flex" }} gap={1}>
           {/* classes table */}
-          <ClassesTable activeProfile={activeProfile} activeClass={activeClass} updateActiveClass={updateActiveClass} />
+          <ClassesTable width="100%" extraColumns={extraColumns} activeProfile={activeProfile} activeClass={activeClass} updateActiveClass={updateActiveClass} />
           {/* details panel */}
         </Box>
       </Box>
