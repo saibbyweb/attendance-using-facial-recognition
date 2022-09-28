@@ -10,14 +10,6 @@ import TableData from '@/components/TableData';
 
 import { ModelsWithFields, modelsWithFields } from '@/helpers/modelsWithFields';
 
-/* options */
-const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
-]
-
-
 /* handle change */
 const handleChange = (something: any) => {
     console.log(something);
@@ -57,21 +49,19 @@ export default function Admin() {
     }
 
     async function fetchClasses() {
+        console.log('called')
         const { data } = await fetchRemoteData('class')
         setClasses(data.docs.map((point: any) => ({
             label: point.classId + `- (${point.course})`,
             value: point.classId
         })))
+        setModelsAndFieldData(modelsWithFields(classes))
+    
     }
     
     useEffect(() => {
         fetchClasses();
-       
-    },[])
-
-    useEffect(() => {
-        setModelsAndFieldData(modelsWithFields(classes))
-    },[classes])
+    },[value])
 
     /* re-fetch data whenever the tab active tab changes */
     useEffect(() => {
